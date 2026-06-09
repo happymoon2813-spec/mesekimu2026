@@ -21,13 +21,8 @@
             overflow: hidden;
         }
         
-        .orbitron {
-            font-family: 'Orbitron', sans-serif;
-        }
-        
-        .cinzel {
-            font-family: 'Cinzel', serif;
-        }
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        .cinzel { font-family: 'Cinzel', serif; }
 
         /* Phone Screen Mockup Container */
         .phone-container {
@@ -38,36 +33,26 @@
             box-shadow: 0 0 40px rgba(124, 58, 237, 0.15);
             border-left: 1px solid rgba(139, 92, 246, 0.15);
             border-right: 1px solid rgba(139, 92, 246, 0.15);
+            margin: 0 auto;
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(31, 41, 55, 0.5);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(139, 92, 246, 0.5);
-            border-radius: 99px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(31, 41, 55, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.5); border-radius: 99px; }
 
         /* Dreamy Ambient Animations */
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-10px) rotate(2deg); }
         }
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
 
         @keyframes pulse-glow {
             0%, 100% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
             50% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.8); }
         }
-        .pulse-glow {
-            animation: pulse-glow 2s infinite;
-        }
+        .pulse-glow { animation: pulse-glow 2s infinite; }
 
         @keyframes stars {
             from { background-position: 0 0; }
@@ -101,9 +86,7 @@
             80% { transform: translate(2px, -2px); text-shadow: -2px 0 #ec4899, 2px 0 #f59e0b; }
             100% { transform: translate(0); text-shadow: none; }
         }
-        .glitch-text {
-            animation: glitch 1.5s infinite;
-        }
+        .glitch-text { animation: glitch 1.5s infinite; }
     </style>
 </head>
 <body class="flex justify-center items-center h-screen w-screen overflow-hidden">
@@ -115,290 +98,8 @@
         <div class="absolute inset-0 stars-bg opacity-40 pointer-events-none"></div>
         <div id="floor-ambient-overlay" class="absolute inset-0 pointer-events-none transition-all duration-1000 bg-purple-950/20"></div>
 
-        <script>
-            // Simple Web Audio API Synthesizer to provide gorgeous, dependency-free audio feedback
-            const AudioEngine = {
-                ctx: null,
-                init() {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                },
-                playTap() {
-                    if (!this.ctx) this.init();
-                    try {
-                        let osc = this.ctx.createOscillator();
-                        let gain = this.ctx.createGain();
-                        osc.type = 'triangle';
-                        osc.frequency.setValueAtTime(440 + Math.random() * 220, this.ctx.currentTime);
-                        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.1);
-                        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-                        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-                        osc.connect(gain);
-                        gain.connect(this.ctx.destination);
-                        osc.start();
-                        osc.stop(this.ctx.currentTime + 0.15);
-                    } catch(e){}
-                },
-                playCoin() {
-                    if (!this.ctx) this.init();
-                    try {
-                        let osc = this.ctx.createOscillator();
-                        let gain = this.ctx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
-                        osc.frequency.setValueAtTime(1318.51, this.ctx.currentTime + 0.08); // E6
-                        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
-                        osc.connect(gain);
-                        gain.connect(this.ctx.destination);
-                        osc.start();
-                        osc.stop(this.ctx.currentTime + 0.3);
-                    } catch(e){}
-                },
-                playUpgrade() {
-                    if (!this.ctx) this.init();
-                    try {
-                        let osc = this.ctx.createOscillator();
-                        let gain = this.ctx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
-                        osc.frequency.exponentialRampToValueAtTime(1046.50, this.ctx.currentTime + 0.25);
-                        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
-                        osc.connect(gain);
-                        gain.connect(this.ctx.destination);
-                        osc.start();
-                        osc.stop(this.ctx.currentTime + 0.3);
-                    } catch(e){}
-                },
-                playDreamyChord() {
-                    if (!this.ctx) this.init();
-                    try {
-                        const freqs = [329.63, 392.00, 493.88, 587.33]; // Em7 notes
-                        freqs.forEach((f, i) => {
-                            let osc = this.ctx.createOscillator();
-                            let gain = this.ctx.createGain();
-                            osc.type = 'sine';
-                            osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.05);
-                            gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
-                            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.8);
-                            osc.connect(gain);
-                            gain.connect(this.ctx.destination);
-                            osc.start();
-                            osc.stop(this.ctx.currentTime + 0.8);
-                        });
-                    } catch(e){}
-                },
-                playGacha() {
-                    if (!this.ctx) this.init();
-                    try {
-                        let now = this.ctx.currentTime;
-                        for(let i = 0; i < 5; i++) {
-                            let osc = this.ctx.createOscillator();
-                            let gain = this.ctx.createGain();
-                            osc.type = 'sawtooth';
-                            osc.frequency.setValueAtTime(150 + i * 200, now + i * 0.05);
-                            osc.frequency.exponentialRampToValueAtTime(800 + i * 200, now + i * 0.05 + 0.2);
-                            gain.gain.setValueAtTime(0.03, now + i * 0.05);
-                            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.2);
-                            osc.connect(gain);
-                            gain.connect(this.ctx.destination);
-                            osc.start(now + i * 0.05);
-                            osc.stop(now + i * 0.05 + 0.2);
-                        }
-                    } catch(e){}
-                },
-                playBossShield() {
-                    if (!this.ctx) this.init();
-                    try {
-                        let osc = this.ctx.createOscillator();
-                        let gain = this.ctx.createGain();
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(120, this.ctx.currentTime);
-                        osc.frequency.linearRampToValueAtTime(40, this.ctx.currentTime + 0.3);
-                        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
-                        osc.connect(gain);
-                        gain.connect(this.ctx.destination);
-                        osc.start();
-                        osc.stop(this.ctx.currentTime + 0.35);
-                    } catch(e){}
-                }
-            };
-        </script>
-
-        <script>
-            // Master level configurations & progression
-            const LEVEL_CONFIGS = [
-                { level: 1, damage: 10, cost: 100 },
-                { level: 2, damage: 20, cost: 110 },
-                { level: 3, damage: 30, cost: 130 },
-                { level: 4, damage: 40, cost: 150 },
-                { level: 5, damage: 50, cost: 200, transition: true }, // Max floor 1
-                { level: 6, damage: 70, cost: 220 },
-                { level: 7, damage: 90, cost: 240 },
-                { level: 8, damage: 110, cost: 260 },
-                { level: 9, damage: 130, cost: 300 },
-                { level: 10, damage: 150, cost: 400, transition: true }, // Max floor 2
-                { level: 11, damage: 180, cost: 430 },
-                { level: 12, damage: 210, cost: 460 },
-                { level: 13, damage: 240, cost: 490 },
-                { level: 14, damage: 270, cost: 520 },
-                { level: 15, damage: 300, cost: 550, transition: true }, // Max floor 3
-                { level: 16, damage: 330, cost: 560 },
-                { level: 17, damage: 360, cost: 570 },
-                { level: 18, damage: 390, cost: 580 },
-                { level: 19, damage: 420, cost: 590 },
-                { level: 20, damage: 450, cost: 600, transition: true }, // Max floor 4
-                { level: 21, damage: 500, cost: 650 },
-                { level: 22, damage: 550, cost: 750 },
-                { level: 23, damage: 600, cost: 850 },
-                { level: 24, damage: 650, cost: 1000 },
-                { level: 25, damage: 800, cost: 0 } // Max floor 5
-            ];
-
-            const FLOORS_DATA = {
-                1: {
-                    name: "浅い眠り",
-                    subtitle: "日常の残影",
-                    color: "from-blue-950/80 to-slate-900/90",
-                    accent: "border-blue-500",
-                    glow: "shadow-blue-500/20",
-                    monsters: ["未読メッセージ", "居眠りする時計", "ブルーマンデー"],
-                    boss: "月曜朝礼の影",
-                    hpNormal: 100,
-                    hpBoss: 500,
-                    goldMin: 20,
-                    goldMax: 30,
-                    shardChance: 0.20,
-                    capLevel: 5,
-                    partners: {
-                        N: { name: "羊数えの精霊", emoji: "🐏", color: "text-slate-300" },
-                        R: { name: "ホワイトノイズ抱き枕", emoji: "🧸", color: "text-blue-300" },
-                        SR: { name: "ラベンダーの香り", emoji: "🪻", color: "text-purple-300" },
-                        SSR: { name: "メラトニンライト", emoji: "💡", color: "text-yellow-300" }
-                    }
-                },
-                2: {
-                    name: "深い眠り",
-                    subtitle: "論理の崩壊",
-                    color: "from-indigo-950/80 to-slate-900/90",
-                    accent: "border-indigo-500",
-                    glow: "shadow-indigo-500/20",
-                    monsters: ["溶ける幾何学体", "空飛ぶサボテン", "逆行ベルトコンベア"],
-                    boss: "シュルレアリスムの巨眼",
-                    hpNormal: 300,
-                    hpBoss: 1500,
-                    goldMin: 40,
-                    goldMax: 50,
-                    shardChance: 0.25,
-                    capLevel: 10,
-                    partners: {
-                        N: { name: "漂うクラゲ", emoji: "🪼", color: "text-cyan-300" },
-                        R: { name: "万華鏡の猫", emoji: "🐱", color: "text-emerald-300" },
-                        SR: { name: "紙飛行機の先導者", emoji: "✈️", color: "text-sky-300" },
-                        SSR: { name: "夢を編むクモ", emoji: "🕸️", color: "text-pink-300" }
-                    }
-                },
-                3: {
-                    name: "矛盾の深淵",
-                    subtitle: "焦燥の迷宮",
-                    color: "from-violet-950/80 to-slate-900/90",
-                    accent: "border-violet-500",
-                    glow: "shadow-violet-500/20",
-                    monsters: ["無限のデッドライン", "囁く影", "落下する重力"],
-                    boss: "焦燥の砂時計巨獣",
-                    hpNormal: 900,
-                    hpBoss: 5000,
-                    goldMin: 60,
-                    goldMax: 70,
-                    shardChance: 0.35,
-                    capLevel: 15,
-                    partners: {
-                        N: { name: "光るホタル", emoji: "🪲", color: "text-green-300" },
-                        R: { name: "殻を破る恐竜", emoji: "🦖", color: "text-teal-300" },
-                        SR: { name: "ゼンマイロボット", emoji: "🤖", color: "text-red-300" },
-                        SSR: { name: "自覚のマスター", emoji: "🌀", color: "text-violet-300" }
-                    }
-                },
-                4: {
-                    name: "潜在意識の海",
-                    subtitle: "忘れ去られた記憶",
-                    color: "from-fuchsia-950/80 to-slate-900/90",
-                    accent: "border-fuchsia-500",
-                    glow: "shadow-fuchsia-500/20",
-                    monsters: ["色褪せたテディベア", "錆びたタイムマシン", "忘れられた名前"],
-                    boss: "忘却の深淵巨鯨",
-                    hpNormal: 2700,
-                    hpBoss: 15000,
-                    goldMin: 80,
-                    goldMax: 90,
-                    shardChance: 0.40,
-                    capLevel: 20,
-                    partners: {
-                        N: { name: "光る水滴", emoji: "💧", color: "text-cyan-200" },
-                        R: { name: "タイムグラスフィッシュ", emoji: "🐟", color: "text-yellow-200" },
-                        SR: { name: "子供時代の風車", emoji: "🎐", color: "text-orange-200" },
-                        SSR: { name: "アニマの投影", emoji: "🧜‍♀️", color: "text-rose-300" }
-                    }
-                },
-                5: {
-                    name: "夢の核心",
-                    subtitle: "心魔の牢籠",
-                    color: "from-rose-950/80 to-slate-900/90",
-                    accent: "border-rose-500",
-                    glow: "shadow-rose-500/20",
-                    monsters: ["自己疑念の欠片", "息苦しい黒霧", "虚無の残響"],
-                    boss: "心魔の複製体",
-                    hpNormal: 8100,
-                    hpBoss: 50000,
-                    goldMin: 100,
-                    goldMax: 100,
-                    shardChance: 0.50,
-                    capLevel: 25,
-                    partners: {
-                        N: { name: "ティンパニ奏者", emoji: "🥁", color: "text-red-400" },
-                        R: { name: "魂の刻印", emoji: "👤", color: "text-indigo-400" },
-                        SR: { name: "共鳴クリスタル", emoji: "💎", color: "text-teal-400" },
-                        SSR: { name: "エゴの光", emoji: "☀️", color: "text-amber-300" }
-                    }
-                }
-            };
-        </script>
-
-        <!-- Custom Alert Container -->
-        <div id="game-alert-container" class="absolute top-16 left-1/2 transform -translate-x-1/2 z-50 w-11/12 pointer-events-none flex flex-col gap-2"></div>
-        <script>
-            function showNotification(message, type = 'info') {
-                const container = document.getElementById('game-alert-container');
-                const div = document.createElement('div');
-                div.className = `p-3 rounded-xl border text-sm text-center shadow-lg transition-all duration-300 translate-y-[-10px] opacity-0 flex items-center justify-center gap-2 pointer-events-auto bg-slate-900/95 `;
-                
-                if (type === 'success') {
-                    div.className += 'border-emerald-500 text-emerald-400';
-                } else if (type === 'error') {
-                    div.className += 'border-rose-500 text-rose-400';
-                } else if (type === 'dreamy') {
-                    div.className += 'border-purple-500 text-purple-400 animate-pulse';
-                } else {
-                    div.className += 'border-blue-500 text-blue-400';
-                }
-                
-                div.innerHTML = message;
-                container.appendChild(div);
-                
-                // Trigger transitions
-                setTimeout(() => {
-                    div.classList.remove('translate-y-[-10px]', 'opacity-0');
-                }, 10);
-                
-                setTimeout(() => {
-                    div.classList.add('translate-y-[-10px]', 'opacity-0');
-                    setTimeout(() => div.remove(), 300);
-                }, 3000);
-            }
-        </script>
-
-        <!-- SCREENS -->
+        <!-- Global Alert Container -->
+        <div id="game-alert-container" class="absolute top-16 left-1/2 transform -translate-x-1/2 z-[160] w-11/12 pointer-events-none flex flex-col gap-2"></div>
 
         <!-- 1. WELCOME SCREEN -->
         <div id="screen-welcome" class="absolute inset-0 z-40 flex flex-col justify-between p-6 text-center bg-gradient-to-b from-[#0a071d] via-[#120e2e] to-[#04020a]">
@@ -430,63 +131,92 @@
             
             <!-- Header HUD -->
             <div class="p-4 bg-slate-950/80 border-b border-purple-950/40 backdrop-blur-md z-10">
-                <div class="flex justify-between items-center mb-2">
+                <div class="flex justify-between items-center mb-2 gap-1.5">
                     <!-- Floor Indicator & Map Switcher Button -->
-                    <button onclick="openMap()" class="flex items-center gap-2 bg-purple-950/60 hover:bg-purple-950/90 border border-purple-500/30 rounded-xl px-3 py-1.5 transition active:scale-95 text-xs">
-                        <i class="fa-solid fa-compass text-purple-400"></i>
-                        <span id="header-floor-name" class="font-bold text-slate-100">第1階層 浅い眠り</span>
+                    <button onclick="openMap()" class="flex-1 max-w-[130px] flex items-center justify-between gap-1.5 bg-purple-950/60 hover:bg-purple-950/90 border border-purple-500/30 rounded-xl px-2.5 py-1.5 transition active:scale-95 text-[11px]">
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-compass text-purple-400 text-[10px]"></i>
+                            <span id="header-floor-name" class="font-bold text-slate-100 truncate max-w-[75px]">1F 浅い眠り</span>
+                        </span>
                         <i class="fa-solid fa-caret-down text-purple-400 text-[10px]"></i>
                     </button>
+
+                    <!-- Status / Progress Overview Button -->
+                    <button onclick="openStatusModal()" class="flex items-center justify-center gap-1 bg-teal-950/70 hover:bg-teal-900 border border-teal-500/30 rounded-xl px-2 py-1.5 transition active:scale-95 text-[11px]">
+                        <i class="fa-solid fa-chart-line text-teal-400"></i>
+                        <span class="font-bold text-teal-200">進度</span>
+                    </button>
                     
+                    <!-- BGM Toggle Button -->
+                    <button onclick="toggleBGM()" class="text-[10px] bg-slate-800 border border-slate-600 text-slate-400 px-2.5 py-1.5 rounded-xl hover:text-white transition active:scale-95 shadow">
+                        <i id="icon-bgm" class="fa-solid fa-volume-xmark"></i>
+                    </button>
+
                     <!-- Dream Privilege (Debug Tools) Button -->
-                    <button onclick="toggleDebugPanel()" class="text-[11px] bg-slate-800 border border-slate-600 text-slate-400 px-2 py-1 rounded hover:text-white transition">
-                        <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> 特権
+                    <button onclick="toggleDebugPanel()" class="text-[10px] bg-slate-800 border border-slate-600 text-slate-400 px-2 py-1.5 rounded-xl hover:text-white transition">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 特権
                     </button>
                 </div>
 
                 <!-- Currency Grid -->
-                <div class="grid grid-cols-3 gap-2 text-center mt-2.5">
-                    <div class="bg-slate-900/80 rounded-xl p-1.5 border border-amber-500/20 flex flex-col justify-center">
-                        <span class="text-[9px] text-amber-500/80 uppercase tracking-wider font-semibold">💰 夢のゴールド</span>
-                        <span id="hud-gold" class="orbitron text-sm font-bold text-amber-400">0</span>
+                <div class="grid grid-cols-4 gap-1 text-center mt-2.5">
+                    <div class="bg-slate-900/80 rounded-xl p-1 border border-amber-500/20 flex flex-col justify-center">
+                        <span class="text-[8px] text-amber-500/80 uppercase tracking-wider font-semibold">💰 ゴールド</span>
+                        <span id="hud-gold" class="orbitron text-xs font-bold text-amber-400">0</span>
                     </div>
-                    <div class="bg-slate-900/80 rounded-xl p-1.5 border border-purple-500/20 flex flex-col justify-center">
-                        <span class="text-[9px] text-purple-400 uppercase tracking-wider font-semibold">✨ 夢の欠片</span>
-                        <span id="hud-dream-shards" class="orbitron text-sm font-bold text-purple-300">0</span>
+                    <div class="bg-slate-900/80 rounded-xl p-1 border border-purple-500/20 flex flex-col justify-center">
+                        <span class="text-[8px] text-purple-400 uppercase tracking-wider font-semibold">✨ 夢の欠片</span>
+                        <span id="hud-dream-shards" class="orbitron text-xs font-bold text-purple-300">0</span>
                     </div>
-                    <div class="bg-slate-900/80 rounded-xl p-1.5 border border-pink-500/20 flex flex-col justify-center">
-                        <span class="text-[9px] text-pink-400 uppercase tracking-wider font-semibold">🔮 ショップの欠片</span>
-                        <span id="hud-shop-shards" class="orbitron text-sm font-bold text-pink-400">0</span>
+                    <div class="bg-slate-900/80 rounded-xl p-1 border border-pink-500/20 flex flex-col justify-center">
+                        <span class="text-[8px] text-pink-400 uppercase tracking-wider font-semibold">🔮 鑑定物</span>
+                        <span id="hud-shop-shards" class="orbitron text-xs font-bold text-pink-400">0</span>
+                    </div>
+                    <div class="bg-slate-900/80 rounded-xl p-1 border border-teal-500/20 flex flex-col justify-center relative group">
+                        <span class="text-[8px] text-teal-400 uppercase tracking-wider font-semibold">🌀 夢の神髄</span>
+                        <span id="hud-dream-essence" class="orbitron text-xs font-bold text-teal-300">0</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Debug Menu (Slide-down drawer) -->
-            <div id="debug-drawer" class="hidden absolute top-[110px] left-0 right-0 bg-slate-900 border-b border-purple-500/40 p-4 z-30 shadow-2xl">
-                <div class="flex justify-between items-center mb-3">
-                    <h4 class="text-xs font-bold text-purple-400"><i class="fa-solid fa-terminal mr-1"></i> 夢境特権（デバッグメニュー）</h4>
-                    <button onclick="toggleDebugPanel()" class="text-slate-400 text-xs hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="giveCheatAssets(1000, 0, 0)" class="bg-slate-800 hover:bg-slate-700 border border-amber-500/20 rounded py-1 px-2 text-left text-xs">
-                        💰 ゴールド +1000
-                    </button>
-                    <button onclick="giveCheatAssets(0, 1000, 0)" class="bg-slate-800 hover:bg-slate-700 border border-purple-500/20 rounded py-1 px-2 text-left text-xs">
-                        ✨ 夢の欠片 +1000
-                    </button>
-                    <button onclick="giveCheatAssets(0, 0, 100)" class="bg-slate-800 hover:bg-slate-700 border border-pink-500/20 rounded py-1 px-2 text-left text-xs">
-                        🔮 ショップの欠片 +100
-                    </button>
-                    <button onclick="unlockAllPartnersCheat()" class="bg-purple-950/40 hover:bg-purple-950/80 border border-purple-500/40 rounded py-1 px-2 text-left text-xs col-span-2 text-center text-purple-300 font-bold">
-                        🌟 20名の全パートナー図鑑コンプリート (隠しエンディング前置)
+            <!-- Debug Menu Drawer -->
+            <div id="debug-drawer" class="hidden absolute top-0 left-0 right-0 bottom-0 bg-slate-950/95 p-6 z-[110] flex flex-col justify-center border-b border-purple-500/40 shadow-2xl">
+                <div class="max-w-[340px] mx-auto w-full space-y-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-sm font-bold text-purple-400"><i class="fa-solid fa-terminal mr-1"></i> 夢境特権（デバッグメニュー）</h4>
+                        <button onclick="toggleDebugPanel()" class="text-slate-400 text-lg hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                        デバッグ特権が発発動しました。テストを円滑に進めるため、任意のリソースを追加したり、図鑑を一発で埋めることが可能です。
+                    </p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="giveCheatAssets(5000, 0, 0, 0)" class="bg-slate-800 hover:bg-slate-700 border border-amber-500/20 rounded-xl py-2 px-3 text-center text-xs font-bold">
+                            💰 ゴールド +5000
+                        </button>
+                        <button onclick="giveCheatAssets(0, 1000, 0, 0)" class="bg-slate-800 hover:bg-slate-700 border border-purple-500/20 rounded-xl py-2 px-3 text-center text-xs font-bold">
+                            ✨ 夢の欠片 +1000
+                        </button>
+                        <button onclick="giveCheatAssets(0, 0, 100, 0)" class="bg-slate-800 hover:bg-slate-700 border border-pink-500/20 rounded-xl py-2 px-3 text-center text-xs font-bold">
+                            🔮 鑑定物 +100
+                        </button>
+                        <button onclick="giveCheatAssets(0, 0, 0, 5)" class="bg-slate-800 hover:bg-slate-700 border border-teal-500/20 rounded-xl py-2 px-3 text-center text-xs font-bold">
+                            🌀 夢の神髄 +5
+                        </button>
+                        <button onclick="unlockAllPartnersCheat()" class="bg-purple-900/40 hover:bg-purple-900/80 border border-purple-500/40 rounded-xl py-3 px-3 text-center text-xs text-purple-300 font-extrabold col-span-2 shadow-lg">
+                            🌟 全20名のパートナーを収集 (隠しボス条件)
+                        </button>
+                    </div>
+                    <button onclick="toggleDebugPanel()" class="w-full mt-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold transition">
+                        閉じる
                     </button>
                 </div>
             </div>
 
             <!-- Battle Arena Zone -->
             <div id="battle-field" class="relative flex-1 flex flex-col justify-between items-center py-6 px-4 cursor-pointer overflow-hidden" onclick="handleTapMonster(event)">
-                <!-- Target HP Bar -->
-                <div class="w-full max-w-[280px] text-center pointer-events-none z-10 mt-2">
+                
+                <!-- Target HP Bar & Control Buttons -->
+                <div class="w-full max-w-[280px] text-center pointer-events-none z-30 mt-2">
                     <div class="flex justify-between items-end mb-1 text-xs">
                         <span id="monster-title" class="font-black tracking-wide text-slate-100 bg-slate-950/60 px-2 py-0.5 rounded-md border border-purple-500/20">モンスター</span>
                         <span id="monster-kills" class="text-purple-300 text-[11px] font-bold">討伐数: 0/10</span>
@@ -499,34 +229,39 @@
                     
                     <div id="monster-hp-text" class="orbitron text-[11px] text-slate-400 font-bold mt-1 text-center">100 / 100</div>
                     
-                    <!-- Boss Timer (If Boss is Active) -->
-                    <div id="boss-timer-container" class="hidden mt-2 bg-rose-950/60 border border-rose-500/40 rounded-lg px-3 py-1 inline-flex items-center gap-1.5 mx-auto">
+                    <!-- Boss Challenge Button -->
+                    <div id="boss-portal-overlay" class="hidden mt-2 pointer-events-auto flex justify-center">
+                        <button onclick="challengeBoss(event)" class="pulse-glow px-4 py-1.5 rounded-xl bg-gradient-to-r from-red-600 via-purple-700 to-pink-600 text-white font-extrabold text-[11px] tracking-widest border border-pink-400/30 flex items-center gap-1.5 shadow-lg transition active:scale-95 duration-100">
+                            <i class="fa-solid fa-skull text-rose-200 animate-pulse text-[10px]"></i>
+                            <span>ボスに挑戦する</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Boss Timer & Retreat Container -->
+                    <div id="boss-timer-container" class="hidden mt-2 bg-rose-950/80 border border-rose-500/40 rounded-xl px-3 py-1 inline-flex items-center gap-2 mx-auto pointer-events-auto">
                         <i class="fa-solid fa-stopwatch text-rose-400 text-xs animate-pulse"></i>
-                        <span class="text-[10px] text-rose-300 font-black uppercase tracking-wider">討伐残り時間</span>
+                        <span class="text-[10px] text-rose-300 font-black uppercase tracking-wider">制限時間:</span>
                         <span id="boss-timer-text" class="orbitron text-xs font-black text-rose-400">30.0s</span>
+                        <button onclick="retreatFromBoss(event)" class="ml-2 px-2 py-0.5 bg-rose-800 hover:bg-rose-700 text-white rounded text-[9px] font-bold transition active:scale-90 shadow">
+                            撤退する
+                        </button>
                     </div>
                 </div>
 
                 <!-- Monster Central Graphic -->
-                <div class="relative w-48 h-48 flex justify-center items-center select-none pointer-events-none">
-                    <!-- Glow behind monster -->
-                    <div id="monster-glow" class="absolute w-36 h-36 rounded-full bg-purple-500/10 filter blur-2xl transition-all duration-500"></div>
-                    
-                    <!-- Interactive Floating Partners in Orbit -->
+                <div class="relative w-48 h-48 flex justify-center items-center select-none">
+                    <div id="monster-glow" class="absolute w-36 h-36 rounded-full bg-purple-500/10 filter blur-2xl pointer-events-none"></div>
                     <div id="orbiting-partners" class="absolute inset-0 pointer-events-none z-20"></div>
-
-                    <!-- Monster Animated Graphic (HTML + CSS) -->
-                    <div id="monster-container" class="z-10 transition-transform duration-75">
+                    <div id="monster-container" class="z-10 transition-transform duration-75 pointer-events-none">
                         <svg id="monster-svg" class="w-40 h-40 drop-shadow-[0_10px_15px_rgba(139,92,246,0.3)] animate-float" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Dynamically injected SVG paths based on floor & state -->
                         </svg>
                     </div>
                 </div>
 
-                <!-- Quick Stats Info Overlay (Dmg, DPS) -->
+                <!-- Quick Stats Info Overlay -->
                 <div class="w-full max-w-[280px] bg-slate-950/40 border border-slate-900/60 rounded-xl px-3 py-2 text-center pointer-events-none z-10 flex justify-between text-[11px]">
                     <div>
-                        <span class="text-slate-500">👆 クリックダメージ</span>
+                        <span class="text-slate-500">👆 タップダメージ</span>
                         <div id="hud-click-damage" class="orbitron font-bold text-indigo-400">10</div>
                     </div>
                     <div class="w-[1px] bg-purple-500/20 h-5 my-auto"></div>
@@ -539,21 +274,25 @@
 
             <!-- Bottom Navigation & Upgrade Menus -->
             <div class="bg-slate-950/95 border-t border-purple-950/80 z-20">
-                <!-- Navigation Tabs -->
-                <div class="flex justify-around border-b border-purple-950/40 text-center text-xs">
-                    <button onclick="switchTab('upgrades')" id="tab-btn-upgrades" class="flex-1 py-3 text-purple-400 border-b-2 border-purple-500 font-bold transition flex flex-col items-center gap-1 bg-purple-950/10">
+                <div class="flex justify-around border-b border-purple-950/40 text-center text-[11px]">
+                    <button onclick="switchTab('upgrades')" id="tab-btn-upgrades" class="flex-1 py-2.5 text-purple-400 border-b-2 border-purple-500 font-bold transition flex flex-col items-center gap-0.5 bg-purple-950/10">
                         <i class="fa-solid fa-angles-up"></i>
                         <span>強化</span>
                     </button>
-                    <button onclick="switchTab('partners')" id="tab-btn-partners" class="flex-1 py-3 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-1">
+                    <button onclick="switchTab('partners')" id="tab-btn-partners" class="flex-1 py-2.5 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-0.5">
                         <i class="fa-solid fa-address-book"></i>
                         <span>図鑑</span>
                     </button>
-                    <button onclick="switchTab('gacha')" id="tab-btn-gacha" class="flex-1 py-3 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-1">
+                    <button onclick="switchTab('gacha')" id="tab-btn-gacha" class="flex-1 py-2.5 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-0.5">
                         <i class="fa-solid fa-cube"></i>
                         <span>ガチャ</span>
                     </button>
-                    <button onclick="switchTab('artifacts')" id="tab-btn-artifacts" class="flex-1 py-3 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-1">
+                    <button onclick="switchTab('lords')" id="tab-btn-lords" class="flex-1 py-2.5 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-0.5 relative">
+                        <i class="fa-solid fa-user-shield text-teal-400"></i>
+                        <span>夢の主</span>
+                        <span id="badge-essence-ready" class="hidden absolute top-1 right-2 w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                    </button>
+                    <button onclick="switchTab('artifacts')" id="tab-btn-artifacts" class="flex-1 py-2.5 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-0.5">
                         <i class="fa-solid fa-gem"></i>
                         <span>神器</span>
                     </button>
@@ -568,9 +307,9 @@
                             <div>
                                 <h3 class="font-bold text-sm text-slate-100 flex items-center gap-1.5">
                                     <span class="text-xs px-1.5 py-0.5 rounded bg-purple-600/30 text-purple-400 font-bold orbitron">LV <span id="upgrade-lvl">1</span></span>
-                                    <span>意識の覚醒 (プレイヤー強化)</span>
+                                    <span>意識の覚醒 (タップ強化)</span>
                                 </h3>
-                                <p class="text-xs text-slate-400 mt-1">夢の中でのプレイヤーのクリック支配力を高めます</p>
+                                <p class="text-xs text-slate-400 mt-1">夢の中でのプレイヤーのタップ力を高めます</p>
                                 <p class="text-[11px] text-indigo-400 font-medium mt-1">現在のダメージ: <span id="upgrade-dmg">10</span></p>
                             </div>
                             <button id="upgrade-button" onclick="upgradePlayer()" class="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2 rounded-xl text-xs font-bold shadow-lg border border-purple-400/20 flex flex-col items-center min-w-[90px] hover:from-purple-500 hover:to-indigo-500 transition active:scale-95 duration-100">
@@ -579,10 +318,9 @@
                             </button>
                         </div>
                         
-                        <!-- Progression Cap details -->
                         <div class="bg-slate-900/30 border border-slate-800 rounded-xl p-2.5 text-center text-xs text-slate-400">
                             <i class="fa-solid fa-circle-info text-purple-400/80 mr-1"></i> 
-                            5レベルごとに、プレイヤーの上昇ステータスが増加します。<br>
+                            5レベルごとに、上昇するダメージ量が増加します。<br>
                             現在の階層制限: <span class="text-purple-300 font-bold orbitron" id="hud-floor-limit">Lv5</span>
                         </div>
                     </div>
@@ -591,20 +329,15 @@
                     <div id="tab-partners" class="hidden space-y-3">
                         <div class="flex justify-between items-center text-xs text-slate-400 bg-slate-900/40 p-2 rounded-lg border border-slate-800">
                             <span>夢のパートナー図鑑 (<span id="partner-collected-count">0</span> / 20)</span>
-                            <span class="text-purple-400">コンプリートで隠しボスシナリオ解放</span>
+                            <span class="text-purple-400">全解放で隠しボスが開放</span>
                         </div>
-                        
-                        <!-- Partner Cards Container -->
-                        <div id="partners-grid" class="grid grid-cols-2 gap-2">
-                            <!-- Populated Dynamically with partners based on currently viewed gacha/floor -->
-                        </div>
+                        <div id="partners-grid" class="grid grid-cols-2 gap-2"></div>
                     </div>
 
-                    <!-- TAB 3: GACHA PANEL -->
+                    <!-- TAB 3: GACHA PANEL AND EXCHANGE -->
                     <div id="tab-gacha" class="hidden space-y-3">
-                        <!-- Pull Pools navigation inside Gacha Tab -->
                         <div class="flex justify-between items-center p-2 rounded-xl bg-slate-900/60 border border-purple-500/20 mb-1 text-xs">
-                            <span class="text-slate-300 font-semibold">現在のエリアガチャ:</span>
+                            <span class="text-slate-300 font-semibold">ガチャプール:</span>
                             <div class="flex items-center gap-1.5">
                                 <button onclick="changeGachaPool(-1)" class="w-6 h-6 rounded bg-purple-950 border border-purple-500/30 flex justify-center items-center hover:bg-purple-900 transition active:scale-90 text-[10px]"><i class="fa-solid fa-chevron-left"></i></button>
                                 <span id="gacha-pool-indicator" class="font-bold text-purple-400">第1階層</span>
@@ -612,13 +345,11 @@
                             </div>
                         </div>
 
-                        <!-- Gacha odds reminder -->
                         <div class="text-[10px] bg-slate-900/30 rounded p-1.5 border border-slate-800 text-slate-400 flex justify-between">
-                            <span>確率：30% パートナー / 70% 欠片 (被り還元:20%)</span>
+                            <span>確率：30% キャラ / 70% 欠片 (還元: 20%)</span>
                             <span class="text-purple-300 font-semibold">N:40% | R:30% | SR:20% | SSR:10%</span>
                         </div>
 
-                        <!-- Buttons for Pulls -->
                         <div class="grid grid-cols-2 gap-3 mt-1">
                             <button onclick="pullGacha(1)" class="bg-gradient-to-r from-purple-950 to-indigo-900 hover:from-purple-900 hover:to-indigo-800 border border-purple-500/40 p-3 rounded-2xl flex flex-col items-center justify-center transition active:scale-95 duration-100">
                                 <span class="font-bold text-xs text-slate-100">1回ガチャ</span>
@@ -630,29 +361,61 @@
                             </button>
                         </div>
 
-                        <!-- Fragment melting helper inside Gacha panel -->
                         <div class="p-2.5 rounded-xl bg-slate-900/50 border border-pink-500/20 flex justify-between items-center mt-2">
                             <div>
                                 <h4 class="text-xs font-bold text-pink-400">✨ 専用の欠片を溶解</h4>
-                                <p class="text-[9px] text-slate-400 mt-0.5">獲得したパートナー専用の欠片を1:1でショップの欠片に溶解します</p>
+                                <p class="text-[9px] text-slate-400 mt-0.5">特定キャラの欠片を1:1でショップの欠片に溶解します</p>
                             </div>
                             <button onclick="meltAllFragments()" class="px-3 py-1.5 bg-pink-900/40 hover:bg-pink-900/80 border border-pink-500/40 rounded-xl text-[11px] font-bold text-pink-300 transition active:scale-95">
                                 一括溶解
                             </button>
                         </div>
+
+                        <!-- EXCHANGE MODULE -->
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-teal-500/20 mt-3 space-y-2">
+                            <h4 class="text-xs font-black text-teal-400 flex items-center gap-1">
+                                <i class="fa-solid fa-right-left"></i> <span>夢境両替所 (相互交換)</span>
+                            </h4>
+                            <p class="text-[9px] text-slate-400 leading-normal">ゴールド、夢の欠片、夢の神髄を相互に等価両替できます。</p>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-1">
+                                <button onclick="exchangeGoldToShards()" class="py-1.5 px-2 bg-slate-950 hover:bg-slate-800 border border-amber-500/20 rounded-xl text-[9px] font-bold text-slate-300 transition active:scale-95 flex flex-col items-center">
+                                    <span>ゴールド ➔ 欠片</span>
+                                    <span class="text-amber-400 orbitron">💰 10k ➜ ✨ 1k</span>
+                                </button>
+                                <button onclick="exchangeShardsToGold()" class="py-1.5 px-2 bg-slate-950 hover:bg-slate-800 border border-purple-500/20 rounded-xl text-[9px] font-bold text-slate-300 transition active:scale-95 flex flex-col items-center">
+                                    <span>欠片 ➔ ゴールド</span>
+                                    <span class="text-purple-300 orbitron">✨ 1k ➜ 💰 10k</span>
+                                </button>
+                                <button onclick="exchangeGoldToEssence()" class="py-1.5 px-2 bg-slate-950 hover:bg-slate-800 border border-amber-500/20 rounded-xl text-[9px] font-bold text-slate-300 transition active:scale-95 flex flex-col items-center">
+                                    <span>ゴールド ➔ 神髄</span>
+                                    <span class="text-amber-400 orbitron">💰 10k ➜ 🌀 1</span>
+                                </button>
+                                <button onclick="exchangeEssenceToGold()" class="py-1.5 px-2 bg-slate-950 hover:bg-slate-800 border border-teal-500/20 rounded-xl text-[9px] font-bold text-slate-300 transition active:scale-95 flex flex-col items-center">
+                                    <span>神髄 ➔ ゴールド</span>
+                                    <span class="text-teal-300 orbitron">🌀 1 ➜ 💰 10k</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- TAB 4: ARTIFACTS SHOP -->
+                    <!-- TAB 4: LORDS -->
+                    <div id="tab-lords" class="hidden space-y-3">
+                        <div class="bg-slate-900/40 rounded-xl p-2.5 border border-teal-500/20 flex justify-between items-center text-xs">
+                            <span class="text-slate-300">🌀 夢の神髄による意識覚醒</span>
+                            <span class="text-teal-400 font-bold">所持: <span id="lords-essence-count" class="orbitron font-extrabold text-teal-300">0</span> 🌀</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-normal">小怪/ボス撃破時に 5% の確率で獲得できる「夢の神髄」を使い、深層主を覚醒させ能力を永続補正します（最大6等）。</p>
+                        <div id="lords-cards-container" class="space-y-3"></div>
+                    </div>
+
+                    <!-- TAB 5: ARTIFACTS SHOP -->
                     <div id="tab-artifacts" class="hidden space-y-3">
                         <div class="flex justify-between items-center text-xs border-b border-purple-950/40 pb-2">
-                            <span class="text-slate-400 font-medium">🔮 ショップの欠片 で神器を購入</span>
-                            <span class="text-pink-400 font-bold">所持数: <span id="artifact-shop-shards-count" class="orbitron">0</span> 🔮</span>
+                            <span class="text-slate-400 font-medium">🔮 鑑定物による神器解放</span>
+                            <span class="text-pink-400 font-bold">所持: <span id="artifact-shop-shards-count" class="orbitron">0</span> 🔮</span>
                         </div>
-                        
-                        <!-- Artifact Row Elements -->
-                        <div id="artifacts-list" class="space-y-2">
-                            <!-- Populated dynamically -->
-                        </div>
+                        <div id="artifacts-list" class="space-y-2"></div>
                     </div>
 
                 </div>
@@ -660,7 +423,7 @@
         </div>
 
         <!-- 3. MAP SWITCHING MODAL VIEW -->
-        <div id="modal-map" class="hidden absolute inset-0 z-40 bg-slate-950/95 backdrop-blur-md p-6 flex flex-col justify-between">
+        <div id="modal-map" class="hidden absolute inset-0 z-[120] bg-slate-950/95 backdrop-blur-md p-6 flex flex-col justify-between">
             <div>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-black cinzel text-purple-400 tracking-wide flex items-center gap-2">
@@ -672,52 +435,121 @@
                 <p class="text-xs text-slate-400 mb-6 leading-relaxed">
                     より深い夢を解放した後は、いつでも以前のエリアにテレポートして図鑑を埋めたり、ゴールドを稼いだりできます。モンスターとガチャプールも同期して切り替わります。
                 </p>
-
                 <div class="space-y-3">
-                    <!-- Dynamic floor portals will be rendered here -->
                     <div id="floor-portals-list" class="space-y-2"></div>
                 </div>
             </div>
-
             <div class="text-center text-[10px] text-slate-600">
                 明晰夢独自のシステム：終局でルシアに立ち向かうには、すべてのパートナーを解放する必要があります。
             </div>
+        </div>
+
+        <!-- STATUS / PROGRESS OVERLAY MODAL -->
+        <div id="modal-status" class="hidden absolute inset-0 z-[130] bg-slate-950/98 backdrop-blur-lg p-5 flex flex-col justify-between overflow-y-auto">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h2 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-400 flex items-center gap-1.5 uppercase">
+                        <i class="fa-solid fa-network-wired text-teal-400"></i> 自覚度ダッシュボード
+                    </h2>
+                    <button onclick="closeStatusModal()" class="text-slate-400 hover:text-white transition w-7 h-7 rounded-full bg-slate-900 flex justify-center items-center border border-slate-800"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <!-- Realtime Statistics Overview -->
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-indigo-500/10">
+                        <span class="text-[10px] text-slate-500 block">🗡️ プレイヤー攻撃力</span>
+                        <span id="stat-player-dmg" class="orbitron font-extrabold text-indigo-400 text-sm">10</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-pink-500/10">
+                        <span class="text-[10px] text-slate-500 block">🤖 共鳴パートナー自動DPS</span>
+                        <span id="stat-partner-dps" class="orbitron font-extrabold text-pink-400 text-sm">0/s</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-amber-500/10">
+                        <span class="text-[10px] text-slate-500 block">💰 蓄積意識（ゴールド）</span>
+                        <span id="stat-gold" class="orbitron font-extrabold text-amber-400 text-sm">0</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-purple-500/10">
+                        <span class="text-[10px] text-slate-500 block">✨ 夢の欠片所持数</span>
+                        <span id="stat-shards" class="orbitron font-extrabold text-purple-400 text-sm">0</span>
+                    </div>
+                </div>
+
+                <!-- Completion Progress Bar -->
+                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <div class="flex justify-between text-[11px] font-bold">
+                        <span class="text-slate-400">👥 パートナー契約進捗 (全階層)</span>
+                        <span class="text-purple-400 orbitron"><span id="stat-partners-count">0</span> / 20</span>
+                    </div>
+                    <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden p-[1px] border border-slate-800">
+                        <div id="stat-partners-bar" class="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Showcase active Dream Lord Slider Gallery -->
+                <div class="bg-slate-900/60 p-4 rounded-2xl border border-teal-500/20 relative space-y-3">
+                    <div class="text-center text-xs font-bold text-slate-400">
+                        🌌 夢の主（守護神主）閲覧鏡
+                    </div>
+
+                    <!-- Lord Showcase main container -->
+                    <div class="flex justify-between items-center gap-1">
+                        <button onclick="navigateShowcase(-1)" class="w-8 h-8 rounded-full bg-slate-950/80 border border-slate-800 hover:border-teal-500 text-slate-300 hover:text-white transition active:scale-90 flex justify-center items-center shrink-0 z-10">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
+                        <!-- Central Enlargeable Showcase Frame (NO CIRCLE, FULL BODY H-64) -->
+                        <div id="showcase-card" class="flex-1 flex flex-col items-center py-4 relative transition duration-300 rounded-2xl min-h-[460px] overflow-visible">
+                            <!-- Injected Visual Lord Render -->
+                            <div id="showcase-avatar-wrapper" class="w-full h-72 flex justify-center items-end relative overflow-visible transition duration-300">
+                            </div>
+                            
+                            <!-- Lord Details -->
+                            <div class="text-center mt-6 z-10 px-2 w-full">
+                                <h3 id="showcase-name" class="font-bold text-base text-slate-100 drop-shadow-md">神主名</h3>
+                                <span id="showcase-status-badge" class="text-[10px] px-2.5 py-0.5 rounded-full inline-block mt-1.5 font-bold transition duration-300">状態</span>
+                                <p id="showcase-desc" class="text-[11px] text-slate-300 leading-normal max-w-[220px] mx-auto mt-3 h-14 overflow-y-auto bg-black/40 p-2 rounded-xl border border-slate-800/40">説明</p>
+                                <div id="showcase-multiplier" class="text-sm text-teal-300 font-bold mt-3 orbitron drop-shadow-[0_2px_4px_rgba(20,184,166,0.3)]">効果: +0%</div>
+                            </div>
+                        </div>
+
+                        <button onclick="navigateShowcase(1)" class="w-8 h-8 rounded-full bg-slate-950/80 border border-slate-800 hover:border-teal-500 text-slate-300 hover:text-white transition active:scale-90 flex justify-center items-center shrink-0 z-10">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="closeStatusModal()" class="w-full py-3 bg-slate-900 hover:bg-slate-850 border border-slate-700 rounded-2xl font-bold tracking-widest text-xs text-slate-300 active:scale-95 duration-100 transition mt-4">
+                ダッシュボードを閉じる
+            </button>
         </div>
 
         <!-- 4. GACHA RESULT SPLASH POPUP -->
         <div id="modal-gacha-result" class="hidden absolute inset-0 z-50 bg-slate-950/95 flex flex-col justify-between p-6 text-center">
             <div class="my-auto space-y-4">
                 <div class="text-lg font-bold text-purple-400 tracking-widest uppercase orbitron">ガチャ結果</div>
-                
                 <div class="w-16 h-[2px] bg-purple-500/40 mx-auto mb-4"></div>
-                
-                <!-- Display Grid of pulled assets -->
-                <div id="gacha-rewards-container" class="max-h-[360px] overflow-y-auto bg-slate-900/60 border border-purple-500/10 rounded-2xl p-4 flex flex-col gap-2">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="gacha-rewards-container" class="max-h-[360px] overflow-y-auto bg-slate-900/60 border border-purple-500/10 rounded-2xl p-4 flex flex-col gap-2"></div>
             </div>
-
             <button onclick="closeGachaResult()" class="py-3 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl font-bold tracking-widest text-sm hover:from-purple-500 hover:to-indigo-500 transition active:scale-95 duration-100">
                 確定して夢に戻る
             </button>
         </div>
 
         <!-- 5. ENDGAME TRIGGER: NORMAL ENDING -->
-        <!-- Game Over / Normal Ending Screen -->
         <div id="screen-normal-ending" class="hidden absolute inset-0 z-40 bg-black flex flex-col justify-between p-8 text-center">
             <div class="my-auto space-y-6">
                 <h2 class="text-3xl font-extrabold cinzel text-slate-100 tracking-wider">(ゲーム終了)</h2>
-                
                 <div class="w-24 h-[1px] bg-slate-800 mx-auto"></div>
-                
-                <h3 class="text-xl font-bold text-rose-400">ノーマルエンディング ——〈目覚め？〉</h3>
-                
+                <h3 class="text-xl font-bold text-rose-400">ノーマルエンディング ——〈醒？〉</h3>
                 <p class="text-sm text-slate-400 leading-relaxed max-w-[280px] mx-auto">
                     「あなたはすでに夢から目覚めました……しかし、これは本当に現実の世界でしょうか？それとも、また別の夢でしょうか……？」
                 </p>
             </div>
-
-            <div class="space-y-3">
+            <div class="w-full mt-6 flex flex-col gap-2">
+                <button onclick="openAchievementsModal()" class="w-full py-3 bg-purple-900/50 border border-purple-500/50 text-purple-300 rounded-2xl font-bold tracking-widest text-sm shadow-xl transition active:scale-95 duration-100 uppercase">
+                    🏆 リザルトと実績一覧
+                </button>
                 <button onclick="resetGame()" class="w-full py-4 bg-slate-900 border border-slate-700 rounded-2xl font-bold text-sm tracking-wider hover:bg-slate-800 transition active:scale-95">
                     再び夢の始まりへ戻る
                 </button>
@@ -725,13 +557,11 @@
         </div>
 
         <!-- 6. GLITCH OVERLAY TRIGGER FOR HIDDEN BOSS -->
-        <!-- Glitch Screen (When player beats F5 Boss and holds ??? Artifact) -->
         <div id="screen-glitch-portal" class="hidden absolute inset-0 z-40 bg-black flex flex-col justify-center items-center p-6 text-center">
             <div class="space-y-6">
                 <p id="glitch-garbled-text" class="text-rose-400 font-mono text-base font-bold glitch-text max-w-[300px]">
                     ？は既に？？夢の中で？覚めた……しかし？？？は？実？の世界？ですか？それと？？もう一つの？境…？
                 </p>
-                
                 <button onclick="enterPentagramScreen()" class="px-8 py-4 border border-rose-500 bg-rose-950/20 hover:bg-rose-950/50 text-rose-500 rounded-xl font-black text-lg shadow-lg tracking-widest shadow-rose-500/20 active:scale-95 duration-100 glitch-text uppercase">
                     ？？？
                 </button>
@@ -748,78 +578,45 @@
                 </p>
             </div>
 
-            <!-- Visual Pentagram Star Graphics with checked states -->
             <div class="relative w-72 h-72 mx-auto my-4 flex justify-center items-center">
-                <!-- SVG Pentagram with glow -->
                 <svg class="w-full h-full absolute" viewBox="0 0 120 120">
-                    <!-- Star lines -->
                     <polygon points="60,10 90,100 20,40 100,40 30,100" fill="none" stroke="rgba(168,85,247,0.3)" stroke-width="1.5" />
-                    <!-- Outer glowing ring -->
                     <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(139,92,246,0.2)" stroke-dasharray="4 2" stroke-width="1" />
                 </svg>
 
-                <!-- 5 Vertex check nodes -->
-                <!-- Vertex 1 (Top): Floor 1 Check -->
-                <div id="star-vertex-1" class="absolute top-[10px] left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition">
-                    <span class="text-xs">Ⅰ</span>
-                </div>
-                <!-- Vertex 2 (Right-Top): Floor 2 Check -->
-                <div id="star-vertex-2" class="absolute top-[90px] right-[10px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition">
-                    <span class="text-xs">Ⅱ</span>
-                </div>
-                <!-- Vertex 3 (Left-Bottom): Floor 3 Check -->
-                <div id="star-vertex-3" class="absolute top-[210px] left-[40px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition">
-                    <span class="text-xs">Ⅲ</span>
-                </div>
-                <!-- Vertex 4 (Right-Bottom): Floor 4 Check -->
-                <div id="star-vertex-4" class="absolute top-[210px] right-[40px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition">
-                    <span class="text-xs">Ⅳ</span>
-                </div>
-                <!-- Vertex 5 (Left-Top): Floor 5 Check -->
-                <div id="star-vertex-5" class="absolute top-[90px] left-[10px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition">
-                    <span class="text-xs">Ⅴ</span>
-                </div>
+                <div id="star-vertex-1" class="absolute top-[10px] left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition"><span class="text-xs">Ⅰ</span></div>
+                <div id="star-vertex-2" class="absolute top-[90px] right-[10px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition"><span class="text-xs">Ⅱ</span></div>
+                <div id="star-vertex-3" class="absolute top-[210px] left-[40px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition"><span class="text-xs">Ⅲ</span></div>
+                <div id="star-vertex-4" class="absolute top-[210px] right-[40px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition"><span class="text-xs">Ⅳ</span></div>
+                <div id="star-vertex-5" class="absolute top-[90px] left-[10px] w-10 h-10 rounded-full bg-slate-900 border border-purple-500 flex justify-center items-center z-10 transition"><span class="text-xs">Ⅴ</span></div>
 
-                <!-- Star Center Button -->
                 <button onclick="startLuciaBattle()" class="absolute w-20 h-20 rounded-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 text-white font-bold text-xs tracking-wider border-2 border-white/20 shadow-lg active:scale-95 duration-100 flex flex-col justify-center items-center gap-1">
                     <span>討伐</span>
                     <span>開始</span>
                 </button>
             </div>
 
-            <!-- Detailed Check Stats details list -->
-            <div id="star-stats-logs" class="bg-slate-950/80 border border-purple-500/20 rounded-2xl p-3.5 text-left text-[11px] space-y-1.5 max-h-[160px] overflow-y-auto">
-                <!-- Injected dynamically -->
-            </div>
+            <div id="star-stats-logs" class="bg-slate-950/80 border border-purple-500/20 rounded-2xl p-3.5 text-left text-[11px] space-y-1.5 max-h-[160px] overflow-y-auto"></div>
         </div>
 
         <!-- 8. FINAL BOSS: LUCIA ARENA -->
         <div id="screen-lucia" class="hidden absolute inset-0 z-40 bg-gradient-to-b from-[#11010b] via-[#050005] to-[#0d010e] flex flex-col justify-between p-6">
-            
-            <!-- Lucia Header with Health Bar and timer -->
             <div class="text-center">
                 <div class="flex justify-between items-center text-rose-500 font-bold tracking-widest text-xs mb-1.5 uppercase orbitron">
                     <span>最終的な障害: ルシア</span>
                     <span id="lucia-timer" class="text-rose-400 text-sm">30.0s</span>
                 </div>
-                
-                <!-- Lucia Huge HP bar -->
                 <div class="w-full bg-slate-950/90 border border-rose-500/30 rounded-full h-4 overflow-hidden p-[1px] shadow-[0_0_15px_rgba(239,68,68,0.2)]">
                     <div id="lucia-hp-fill" class="h-full bg-gradient-to-r from-red-600 via-rose-500 to-pink-500 transition-all duration-75 rounded-full" style="width: 100%"></div>
                 </div>
                 <div id="lucia-hp-text" class="orbitron text-xs text-rose-400 font-bold mt-1">200,000,000 / 200,000,000</div>
-                
-                <!-- Shield warning and status message -->
                 <div id="lucia-status-desc" class="text-[10px] text-purple-400 mt-1 uppercase tracking-widest animate-pulse font-semibold">討伐進行中...</div>
             </div>
 
-            <!-- Boss Graphic and Active Shield Spawn Nodes inside Lucia Arena -->
-            <div class="relative w-full flex-1 flex flex-col justify-center items-center my-6" onclick="handleTapLucia(event)">
-                <!-- Lucia Avatar (Visual Wings / Hologram concept) -->
+            <div class="relative w-full flex-1 flex flex-col justify-center items-center my-6 animate-float" onclick="handleTapLucia(event)">
                 <div id="lucia-avatar-wrapper" class="relative transition-transform duration-75">
-                    <svg class="w-48 h-48 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)] animate-float" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-48 h-48 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="50" cy="50" r="30" fill="url(#luciaGlow)" opacity="0.3"/>
-                        <!-- Angelic/Demonic wings SVG representation -->
                         <path d="M50 30 C30 10 10 40 50 80 C90 40 70 10 50 30 Z" fill="rgba(244,63,94,0.15)" stroke="#f43f5e" stroke-width="1.5"/>
                         <path d="M50 40 C35 25 20 45 50 75 C80 45 65 25 50 40 Z" fill="rgba(168,85,247,0.2)" stroke="#a855f7" stroke-width="1"/>
                         <circle cx="50" cy="50" r="6" fill="#ffffff" class="pulse-glow"/>
@@ -831,17 +628,12 @@
                         </defs>
                     </svg>
                 </div>
-
-                <!-- Protective Shields display under Boss (Visible and clickable when invisible/shield active) -->
-                <div id="lucia-shields-block" class="hidden absolute bottom-2 left-0 right-0 flex justify-center gap-3 z-30">
-                    <!-- Rendered Dynamically as 3 clickable nodes with HP bars -->
-                </div>
+                <div id="lucia-shields-block" class="hidden absolute bottom-2 left-0 right-0 flex justify-center gap-3 z-30"></div>
             </div>
 
-            <!-- Active Output Stats details -->
             <div class="bg-slate-950/80 border border-rose-500/20 rounded-2xl p-3 flex justify-around text-center text-xs">
                 <div>
-                    <span class="text-slate-500">🗡️ プレイヤー決戰威力</span>
+                    <span class="text-slate-500">🗡️ プレイヤー決戦威力</span>
                     <div id="lucia-hud-player-dmg" class="orbitron text-rose-400 font-bold">120,000</div>
                 </div>
                 <div class="w-[1px] bg-rose-500/20 h-5 my-auto"></div>
@@ -857,61 +649,248 @@
             <div class="my-auto space-y-6">
                 <span id="ending-icon" class="text-6xl block">🌟</span>
                 <h2 id="ending-title" class="text-2xl font-black cinzel text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-rose-400 to-purple-400 tracking-wider">真エンド</h2>
-                
                 <div class="w-16 h-[1px] bg-slate-800 mx-auto"></div>
-                
-                <p id="ending-desc" class="text-sm text-slate-300 leading-relaxed max-w-[280px] mx-auto whitespace-pre-line">
-                    結末を読み込み中...
-                </p>
+                <p id="ending-desc" class="text-sm text-slate-300 leading-relaxed max-w-[280px] mx-auto whitespace-pre-line">結末を読み込み中...</p>
+            </div>
+            <div class="w-full mt-6 flex flex-col gap-2">
+                <button onclick="openAchievementsModal()" class="w-full py-3 bg-purple-900/50 border border-purple-500/50 text-purple-300 rounded-2xl font-bold tracking-widest text-sm shadow-xl transition active:scale-95 duration-100 uppercase">
+                    🏆 リザルトと実績一覧
+                </button>
+                <button onclick="resetGame()" class="w-full py-4 bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 text-slate-100 rounded-2xl font-black text-sm tracking-widest shadow-xl transition active:scale-95 duration-100 uppercase">
+                    本来の自分を取り戻す（リスタート）
+                </button>
+            </div>
+        </div>
+
+        <!-- ACHIEVEMENT MODAL -->
+        <div id="modal-achievements" class="hidden absolute inset-0 z-[160] bg-slate-950/98 backdrop-blur-md p-5 flex flex-col justify-between overflow-hidden">
+            <div class="flex justify-between items-center border-b border-purple-500/30 pb-3">
+                <h2 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 flex items-center gap-1.5 uppercase">
+                    <i class="fa-solid fa-trophy text-yellow-400"></i> 最終実績
+                </h2>
+                <button onclick="closeAchievementsModal()" class="text-slate-400 hover:text-white transition w-7 h-7 rounded-full bg-slate-900 flex justify-center items-center border border-slate-800"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-4 space-y-3" id="achievements-list">
+                <!-- Achievements Injected Here -->
             </div>
 
-            <button onclick="resetGame()" class="w-full py-4 mt-6 bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 text-slate-100 rounded-2xl font-black text-sm tracking-widest shadow-xl transition active:scale-95 duration-100 uppercase">
-                本来の自分を取り戻す（リスタート）
+            <button onclick="closeAchievementsModal()" class="w-full py-3 bg-slate-900 hover:bg-slate-850 border border-slate-700 rounded-2xl font-bold tracking-widest text-xs text-slate-300 active:scale-95 duration-100 transition mt-2">
+                閉じる
             </button>
         </div>
 
     </div>
 
+    <!-- UNIFIED SCRIPTS TAG AT THE VERY BOTTOM OF THE BODY -->
     <script>
-        // Game Engine Variables
+        // --- 1. AUDIO ENGINE SYSTEM ---
+        const AudioEngine = {
+            ctx: null,
+            bgmMain: new Audio('music/main.mp3'), // 遊戲主BGM路徑
+            bgmBoss: new Audio('music/boss.mp3'), // 隱藏Boss BGM路徑
+            
+            init() {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // 設定BGM循環播放與音量 (可依需求調整 0.0 ~ 1.0)
+                this.bgmMain.loop = true;
+                this.bgmMain.volume = 0.4;
+                this.bgmBoss.loop = true;
+                this.bgmBoss.volume = 0.5;
+            },
+            
+            playMainBGM() {
+                this.bgmBoss.pause();
+                this.bgmBoss.currentTime = 0;
+                let playPromise = this.bgmMain.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        document.getElementById('icon-bgm').className = "fa-solid fa-volume-high";
+                    }).catch(error => {
+                        console.log("BGM Error:", error);
+                        showNotification("🎵 音樂無法播放！請確認 music/main.mp3 是否存在，或點擊右上角音量鍵手動播放。", "error");
+                        document.getElementById('icon-bgm').className = "fa-solid fa-volume-xmark text-rose-400";
+                    });
+                }
+            },
+            
+            playBossBGM() {
+                this.bgmMain.pause();
+                this.bgmMain.currentTime = 0;
+                let playPromise = this.bgmBoss.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        document.getElementById('icon-bgm').className = "fa-solid fa-volume-high";
+                    }).catch(error => {
+                        console.log("BGM Error:", error);
+                        showNotification("🎵 音樂無法播放！請確認 music/boss.mp3 是否存在，或點擊右上角音量鍵手動播放。", "error");
+                        document.getElementById('icon-bgm').className = "fa-solid fa-volume-xmark text-rose-400";
+                    });
+                }
+            },
+            
+            stopAllBGM() {
+                this.bgmMain.pause();
+                this.bgmMain.currentTime = 0;
+                this.bgmBoss.pause();
+                this.bgmBoss.currentTime = 0;
+                document.getElementById('icon-bgm').className = "fa-solid fa-volume-xmark text-slate-400";
+            },
+
+            playTap() {
+                if (!this.ctx) this.init();
+                try {
+                    let osc = this.ctx.createOscillator();
+                    let gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440 + Math.random() * 220, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.15);
+                } catch(e){}
+            },
+            playCoin() {
+                if (!this.ctx) this.init();
+                try {
+                    let osc = this.ctx.createOscillator();
+                    let gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
+                    osc.frequency.setValueAtTime(1318.51, this.ctx.currentTime + 0.08); // E6
+                    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.3);
+                } catch(e){}
+            },
+            playUpgrade() {
+                if (!this.ctx) this.init();
+                try {
+                    let osc = this.ctx.createOscillator();
+                    let gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(1046.50, this.ctx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.3);
+                } catch(e){}
+            },
+            playDreamyChord() {
+                if (!this.ctx) this.init();
+                try {
+                    const freqs = [329.63, 392.00, 493.88, 587.33]; // Em7 notes
+                    freqs.forEach((f, i) => {
+                        let osc = this.ctx.createOscillator();
+                        let gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.05);
+                        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.8);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start();
+                        osc.stop(this.ctx.currentTime + 0.8);
+                    });
+                } catch(e){}
+            },
+            playGacha() {
+                if (!this.ctx) this.init();
+                try {
+                    let now = this.ctx.currentTime;
+                    for(let i = 0; i < 5; i++) {
+                        let osc = this.ctx.createOscillator();
+                        let gain = this.ctx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(150 + i * 200, now + i * 0.05);
+                        osc.frequency.exponentialRampToValueAtTime(800 + i * 200, now + i * 0.05 + 0.2);
+                        gain.gain.setValueAtTime(0.03, now + i * 0.05);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.2);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now + i * 0.05);
+                        osc.stop(now + i * 0.05 + 0.2);
+                    }
+                } catch(e){}
+            },
+            playBossShield() {
+                if (!this.ctx) this.init();
+                try {
+                    let osc = this.ctx.createOscillator();
+                    let gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(40, this.ctx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.35);
+                } catch(e){}
+            }
+        };
+
+        // --- 2. GAME ENGINE VARIABLES ---
         const state = {
             gold: 0,
             dreamShards: 0,
             shopShards: 0,
+            dreamEssence: 0, 
             playerLevel: 1,
             maxFloorReached: 1,
             activeFloor: 1,
-            monstersDefeated: 0,
+            monstersDefeated: 0, 
             isBossActive: false,
             monsterHP: 100,
             monsterMaxHP: 100,
             monsterName: "",
             
-            // Partner Gacha State
             gachaViewingFloor: 1,
-            partnersOwned: {}, // partnerId: boolean
-            fragments: {},     // partnerId: number
+            partnersOwned: {}, 
+            fragments: {},     
 
-            // Artifacts
+            lordLevels: {
+                purple: 0,  
+                green: 0,   
+                yellow: 0   
+            },
+            showcaseLordIndex: 0,
+
             artifactsOwned: {
-                wealth: false,   // +100% Gold
-                blade: false,    // +200% Player Click Dmg
-                projection: false, // +200% Partner Dmg
-                memory: false,   // +200% Dream Shards
-                hidden: false    // "???" item
+                wealth: false,   
+                blade: false,    
+                projection: false, 
+                memory: false,   
+                resonance: false, 
+                hidden: false    
             },
 
-            // Boss Lucia Specifics
             luciaHP: 200000000,
             luciaMaxHP: 200000000,
-            luciaShields: [], // list of shield states { id, hp, maxHp }
+            luciaShields: [], 
             luciaInvisible: false,
             luciaTimer: 30.0,
             luciaTimerId: null,
             shield1Triggered: false,
             shield2Triggered: false,
 
-            // Checks of Pentagram
+            // Achievement Trackers
+            cumulativeGold: 0,
+            cumulativeShards: 0,
+            cumulativeEssence: 0,
+            luciaDefeated: false,
+
             checkedF1: false,
             checkedF2: false,
             checkedF3: false,
@@ -921,7 +900,250 @@
             finalPartnerDPS: 0
         };
 
-        // Construct standard partners dictionary
+        // --- 3. GAME CONSTANTS & PROGRESSION DATA (JAPANESE) ---
+        const LEVEL_CONFIGS = [
+            { level: 1, damage: 10, cost: 100 },
+            { level: 2, damage: 20, cost: 110 },
+            { level: 3, damage: 30, cost: 130 },
+            { level: 4, damage: 40, cost: 150 },
+            { level: 5, damage: 50, cost: 200, transition: true }, 
+            { level: 6, damage: 70, cost: 220 },
+            { level: 7, damage: 90, cost: 240 },
+            { level: 8, damage: 110, cost: 260 },
+            { level: 9, damage: 130, cost: 300 },
+            { level: 10, damage: 150, cost: 400, transition: true }, 
+            { level: 11, damage: 180, cost: 430 },
+            { level: 12, damage: 210, cost: 460 },
+            { level: 13, damage: 240, cost: 490 },
+            { level: 14, damage: 270, cost: 520 },
+            { level: 15, damage: 300, cost: 550, transition: true }, 
+            { level: 16, damage: 330, cost: 560 },
+            { level: 17, damage: 360, cost: 570 },
+            { level: 18, damage: 390, cost: 580 },
+            { level: 19, damage: 420, cost: 590 },
+            { level: 20, damage: 450, cost: 600, transition: true }, 
+            { level: 21, damage: 500, cost: 650 },
+            { level: 22, damage: 550, cost: 750 },
+            { level: 23, damage: 600, cost: 850 },
+            { level: 24, damage: 650, cost: 1000 },
+            { level: 25, damage: 800, cost: 1000 } 
+        ];
+
+        const FLOORS_DATA = {
+            1: {
+                name: "浅い眠り",
+                subtitle: "日常の残影",
+                color: "from-blue-950/80 to-slate-900/90",
+                accent: "border-blue-500",
+                glow: "shadow-blue-500/20",
+                monsters: ["未読メッセージ", "居眠りする時計", "ブルーマンデー"],
+                boss: "月曜朝礼の影",
+                hpNormal: 100,
+                hpBoss: 500,
+                goldMin: 20,
+                goldMax: 30,
+                shardChance: 0.20,
+                capLevel: 5,
+                partners: {
+                    N: { name: "羊数えの精霊", emoji: "🐏", color: "text-slate-300", baseDmg: 5 },
+                    R: { name: "ホワイトノイズ抱き枕", emoji: "🧸", color: "text-blue-300", baseDmg: 10 },
+                    SR: { name: "ラベンダーの香り", emoji: "🪻", color: "text-purple-300", baseDmg: 15 },
+                    SSR: { name: "メラトニンライト", emoji: "💡", color: "text-yellow-300", baseDmg: 20 }
+                }
+            },
+            2: {
+                name: "深い眠り",
+                subtitle: "論理の崩壊",
+                color: "from-indigo-950/80 to-slate-900/90",
+                accent: "border-indigo-500",
+                glow: "shadow-indigo-500/20",
+                monsters: ["溶ける幾何学体", "空飛ぶサボテン", "逆行ベルトコンベア"],
+                boss: "シュルレアリスムの巨眼",
+                hpNormal: 300,
+                hpBoss: 1500,
+                goldMin: 40,
+                goldMax: 50,
+                shardChance: 0.25,
+                capLevel: 10,
+                partners: {
+                    N: { name: "漂うクラゲ", emoji: "🪼", color: "text-cyan-300", baseDmg: 15 },
+                    R: { name: "万華鏡の猫", emoji: "🐱", color: "text-emerald-300", baseDmg: 30 },
+                    SR: { name: "紙飛行機の先導者", emoji: "✈️", color: "text-sky-300", baseDmg: 45 },
+                    SSR: { name: "夢を編むクモ", emoji: "🕸️", color: "text-pink-300", baseDmg: 60 }
+                }
+            },
+            3: {
+                name: "矛盾の深淵",
+                subtitle: "焦燥の迷宮",
+                color: "from-violet-950/80 to-slate-900/90",
+                accent: "border-violet-500",
+                glow: "shadow-violet-500/20",
+                monsters: ["無限のデッドライン", "囁く影", "落下する重力"],
+                boss: "焦燥の砂時計巨獣",
+                hpNormal: 900,
+                hpBoss: 5000,
+                goldMin: 60,
+                goldMax: 70,
+                shardChance: 0.35,
+                capLevel: 15,
+                partners: {
+                    N: { name: "光るホタル", emoji: "🪲", color: "text-green-300", baseDmg: 30 },
+                    R: { name: "殻を破る恐竜", emoji: "🦖", color: "text-teal-300", baseDmg: 60 },
+                    SR: { name: "ゼンマイロボット", emoji: "🤖", color: "text-red-300", baseDmg: 90 },
+                    SSR: { name: "自覚のマスター", emoji: "🌀", color: "text-violet-300", baseDmg: 120 }
+                }
+            },
+            4: {
+                name: "潜在意識の海",
+                subtitle: "忘れ去られた記憶",
+                color: "from-fuchsia-950/80 to-slate-900/90",
+                accent: "border-fuchsia-500",
+                glow: "shadow-fuchsia-500/20",
+                monsters: ["色褪せたテディベア", "錆びたタイムマシン", "忘れられた名前"],
+                boss: "忘却の深淵巨鯨",
+                hpNormal: 2700,
+                hpBoss: 15000,
+                goldMin: 80,
+                goldMax: 90,
+                shardChance: 0.40,
+                capLevel: 20,
+                partners: {
+                    N: { name: "光る水滴", emoji: "💧", color: "text-cyan-200", baseDmg: 45 },
+                    R: { name: "タイムグラスフィッシュ", emoji: "🐟", color: "text-yellow-200", baseDmg: 90 },
+                    SR: { name: "子供時代の風車", emoji: "🎐", color: "text-orange-200", baseDmg: 135 },
+                    SSR: { name: "アニマの投影", emoji: "🧜‍♀️", color: "text-rose-300", baseDmg: 180 }
+                }
+            },
+            5: {
+                name: "夢の核心",
+                subtitle: "心魔の牢籠",
+                color: "from-rose-950/80 to-slate-900/90",
+                accent: "border-rose-500",
+                glow: "shadow-rose-500/20",
+                monsters: ["自己疑念の欠片", "息苦しい黒霧", "虚無の残響"],
+                boss: "心魔の複製体",
+                hpNormal: 8100,
+                hpBoss: 50000,
+                goldMin: 100,
+                goldMax: 100,
+                shardChance: 0.50,
+                capLevel: 25,
+                partners: {
+                    N: { name: "定音鼓手", emoji: "🥁", color: "text-red-400", baseDmg: 80 },
+                    R: { name: "魂の刻印", emoji: "👤", color: "text-indigo-400", baseDmg: 160 },
+                    SR: { name: "共鳴クリスタル", emoji: "💎", color: "text-teal-400", baseDmg: 240 },
+                    SSR: { name: "エゴ of ライト", emoji: "☀️", color: "text-amber-300", baseDmg: 320 }
+                }
+            }
+        };
+
+        // --- 4. PROTAGONISTS CONFIG ---
+        const PROTAGONISTS_CONFIG = {
+            purple: {
+                name: "紫曜の主 - アメジスト",
+                color: "border-purple-500 text-purple-400",
+                bg: "bg-purple-950/10",
+                desc: "タップ意志の化身。深層意識の刃で、狂暴なる心魔を貫き裂く。",
+                icon: "fa-fire",
+                getBonus: (lvl) => {
+                    const vals = [0, 15, 30, 45, 60, 75, 100];
+                    return vals[lvl] || 0;
+                },
+                effectText: "タップ威力"
+            },
+            green: {
+                name: "翠緑の主 - エメラルド",
+                color: "border-emerald-500 text-emerald-400",
+                bg: "bg-emerald-950/10",
+                desc: "共鳴夢路の引導。精霊たちの魂と同期し、DPSを大幅に増幅する。",
+                icon: "fa-wind",
+                getBonus: (lvl) => {
+                    const vals = [0, 15, 30, 45, 60, 75, 100];
+                    return vals[lvl] || 0;
+                },
+                effectText: "自動DPS"
+            },
+            yellow: {
+                name: "黄金の主 - トパーズ",
+                color: "border-yellow-500 text-yellow-400",
+                bg: "bg-yellow-950/10",
+                desc: "無限妄想の源泉。空間に輝く記憶を具現化し、報酬を永続加算する。",
+                icon: "fa-coins",
+                getBonus: (lvl) => {
+                    const vals = [0, 10, 20, 30, 40, 50, 75];
+                    return vals[lvl] || 0;
+                },
+                effectText: "報酬加算倍率"
+            }
+        };
+
+        function getLordUpgradeCost(lvl) {
+            if (lvl >= 5) return 5;
+            return 3;
+        }
+
+        function getLordVisualHTML(key, isSilhouette = false) {
+            let primaryColor = "#a855f7"; 
+            let secondaryColor = "#6366f1";
+            let innerShape = "";
+
+            if (key === 'green') {
+                primaryColor = "#10b981";
+                secondaryColor = "#06b6d4";
+                innerShape = `
+                    <path d="M50 25 C35 25 30 45 50 50 C70 55 65 75 50 75" stroke="${primaryColor}" stroke-width="4" stroke-linecap="round" fill="none" />
+                    <circle cx="50" cy="50" r="10" fill="none" stroke="${secondaryColor}" stroke-width="2" stroke-dasharray="4,2" />
+                    <path d="M30 40 L40 50 L30 60" stroke="${primaryColor}" stroke-width="2" fill="none"/>
+                    <path d="M70 40 L60 50 L70 60" stroke="${primaryColor}" stroke-width="2" fill="none"/>
+                `;
+            } else if (key === 'yellow') {
+                primaryColor = "#f59e0b";
+                secondaryColor = "#ec4899";
+                innerShape = `
+                    <circle cx="50" cy="50" r="24" fill="none" stroke="${primaryColor}" stroke-width="3" stroke-dasharray="6,3" />
+                    <circle cx="50" cy="50" r="14" fill="none" stroke="${secondaryColor}" stroke-width="2" />
+                    <line x1="50" y1="15" x2="50" y2="85" stroke="${primaryColor}" stroke-width="2" />
+                    <line x1="15" y1="50" x2="85" y2="50" stroke="${primaryColor}" stroke-width="2" />
+                    <polygon points="50,22 55,35 45,35" fill="${secondaryColor}" />
+                    <polygon points="50,78 55,65 45,65" fill="${secondaryColor}" />
+                `;
+            } else {
+                innerShape = `
+                    <polygon points="50,15 58,42 85,50 58,58 50,85 42,58 15,50 42,42" fill="${primaryColor}" opacity="0.8"/>
+                    <circle cx="50" cy="50" r="12" fill="none" stroke="${secondaryColor}" stroke-width="2" />
+                    <polygon points="50,25 54,46 75,50 54,54 50,75 46,54 25,50 46,46" fill="#fff" />
+                `;
+            }
+
+            const filterStyle = isSilhouette ? 'filter: brightness(0) contrast(1.2);' : '';
+            const pulseAnim = isSilhouette ? '' : 'animate-pulse';
+
+            return `
+                <svg class="w-full h-full ${pulseAnim}" style="${filterStyle}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="tokenGlow_${key}" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="${primaryColor}" stop-opacity="0.4"/>
+                            <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="url(#tokenGlow_${key})" />
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="${primaryColor}" stroke-opacity="0.2" stroke-width="1" />
+                    ${innerShape}
+                </svg>
+            `;
+        }
+
+        // --- 5. ARTIFACTS SHOP LISTING (JAPANESE) ---
+        const ARTIFACT_SHOP_ITEMS = [
+            { id: 'wealth', name: '富の妄想', cost: 50, desc: 'ゴールドの獲得量が100%増加します', icon: 'fa-sack-dollar' },
+            { id: 'blade', name: '清醒の刃', cost: 80, desc: 'プレイヤーのタップダメージが200%増加します', icon: 'fa-sword' },
+            { id: 'projection', name: '潜在意識の投影', cost: 120, desc: 'パートナーの自動DPSが200%増加します', icon: 'fa-arrows-spin' },
+            { id: 'memory', name: '記憶の欠片', cost: 200, desc: '夢の欠片の獲得量が200%増加します', icon: 'fa-brain' },
+            { id: 'resonance', name: '神髄の共鳴', cost: 250, desc: 'モンスター討伐時の夢の神髄(🌀)獲得量が2倍になります', icon: 'fa-waveform' },
+            { id: 'hidden', name: '???', cost: 300, desc: '謎に包まれた隠しアイテム。図鑑コンプリートと合わせることで、隠しボス「ルシア」のシナリオが解放されます。', icon: 'fa-circle-question' }
+        ];
+
+        // --- 6. INITIAL STATE SETUP ---
         const PARTNERS_CONFIG = [];
         Object.keys(FLOORS_DATA).forEach(floorNum => {
             const f = FLOORS_DATA[floorNum];
@@ -933,49 +1155,97 @@
                     floor: parseInt(floorNum),
                     rarity: rarity,
                     emoji: p.emoji,
-                    color: p.color
+                    color: p.color,
+                    baseDmg: p.baseDmg
                 });
             });
         });
 
-        // Initialize state defaults
         PARTNERS_CONFIG.forEach(p => {
             state.partnersOwned[p.id] = false;
             state.fragments[p.id] = 0;
         });
 
-        // Start Game Interface Trigger
+        // BGM TOGGLE HANDLER
+        function toggleBGM() {
+            const icon = document.getElementById('icon-bgm');
+            if (AudioEngine.bgmMain.paused && AudioEngine.bgmBoss.paused) {
+                // Determine which music to play based on whether we are actively fighting Lucia
+                if (!document.getElementById('screen-lucia').classList.contains('hidden')) {
+                    AudioEngine.playBossBGM();
+                } else {
+                    AudioEngine.playMainBGM();
+                }
+            } else {
+                AudioEngine.stopAllBGM();
+            }
+        }
+
+        // NOTIFICATION HANDLER (OPTIMIZED FOR MAX 3 NOTIFICATIONS)
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('game-alert-container');
+            if (!container) return;
+
+            // Enforce max 3 notifications limit
+            while (container.children.length >= 3) {
+                container.removeChild(container.firstChild); // Remove oldest
+            }
+
+            const div = document.createElement('div');
+            div.className = `p-3 rounded-xl border text-sm text-center shadow-lg transition-all duration-300 translate-y-[-10px] opacity-0 flex items-center justify-center gap-2 pointer-events-auto bg-slate-900/95 `;
+            
+            if (type === 'success') {
+                div.className += 'border-emerald-500 text-emerald-400';
+            } else if (type === 'error') {
+                div.className += 'border-rose-500 text-rose-400';
+            } else if (type === 'dreamy') {
+                div.className += 'border-purple-500 text-purple-400 animate-pulse';
+            } else {
+                div.className += 'border-blue-500 text-blue-400';
+            }
+            
+            div.innerHTML = message;
+            container.appendChild(div);
+            
+            setTimeout(() => {
+                div.classList.remove('translate-y-[-10px]', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                if(container.contains(div)){
+                    div.classList.add('translate-y-[-10px]', 'opacity-0');
+                    setTimeout(() => {
+                        if(container.contains(div)) div.remove();
+                    }, 300);
+                }
+            }, 3000);
+        }
+
+        // --- 7. CORE GAMEPLAY INTERACTIVE LOOPS & TRIGGERS ---
         function startGame() {
+            AudioEngine.init();
+            AudioEngine.playMainBGM(); // 遊戲開始，播放主BGM
             AudioEngine.playDreamyChord();
             document.getElementById('screen-welcome').classList.add('hidden');
             document.getElementById('screen-game').classList.remove('hidden');
             
-            // Set up initial monster
             spawnMonster();
             updateHUD();
-            
-            // Run automatic DPS ticks
             setInterval(autoDPSTick, 1000);
         }
 
-        // Spawn standard floor monsters
         function spawnMonster() {
             const floor = FLOORS_DATA[state.activeFloor];
-            const maxLvl = floor.capLevel;
             
-            if (state.monstersDefeated >= 10 && !state.isBossActive) {
-                // Spawn boss
-                state.isBossActive = true;
+            if (state.isBossActive) {
                 state.monsterName = floor.boss;
                 state.monsterMaxHP = floor.hpBoss;
                 state.monsterHP = floor.hpBoss;
                 
-                // Show Boss timer
                 document.getElementById('boss-timer-container').classList.remove('hidden');
+                document.getElementById('boss-portal-overlay').classList.add('hidden');
                 startBossTimer();
             } else {
-                state.isBossActive = false;
-                // Randomly select one of 3 monsters
                 const mIdx = Math.floor(Math.random() * floor.monsters.length);
                 state.monsterName = floor.monsters[mIdx];
                 state.monsterMaxHP = floor.hpNormal;
@@ -983,14 +1253,37 @@
                 
                 document.getElementById('boss-timer-container').classList.add('hidden');
                 stopBossTimer();
+
+                if (state.monstersDefeated >= 10) {
+                    document.getElementById('boss-portal-overlay').classList.remove('hidden');
+                } else {
+                    document.getElementById('boss-portal-overlay').classList.add('hidden');
+                }
             }
             
-            // Set SVG visual representing the monster
             setMonsterSVG();
             updateMonsterHPBar();
         }
 
-        // Draw unique animated visual SVG paths representing each floor's monster
+        function challengeBoss(event) {
+            if (event) event.stopPropagation(); 
+            AudioEngine.playUpgrade();
+            state.isBossActive = true;
+            spawnMonster();
+            updateHUD();
+        }
+
+        function retreatFromBoss(event) {
+            if (event) event.stopPropagation();
+            AudioEngine.playBossShield();
+            stopBossTimer();
+            state.isBossActive = false;
+            state.monstersDefeated = 10;
+            spawnMonster();
+            updateHUD();
+            showNotification("🚪 ボス戦から撤退しました。雑魚戦で準備を整えましょう。", "info");
+        }
+
         function setMonsterSVG() {
             const svg = document.getElementById('monster-svg');
             let color = "#3b82f6";
@@ -998,24 +1291,23 @@
             let extraShapes = "";
 
             if (state.activeFloor === 1) {
-                color = "#60a5fa"; // Pastel blue
+                color = "#60a5fa"; 
                 extraShapes = `<ellipse cx="50" cy="50" rx="35" ry="30" fill="url(#grad)" />`;
             } else if (state.activeFloor === 2) {
-                color = "#818cf8"; // Super-real indigo
+                color = "#818cf8"; 
                 extraShapes = `<rect x="25" y="25" width="50" height="50" rx="10" fill="url(#grad)" transform="rotate(45 50 50)" />`;
             } else if (state.activeFloor === 3) {
-                color = "#a78bfa"; // Violet deadline shadow
+                color = "#a78bfa"; 
                 extraShapes = `<polygon points="50,10 90,85 10,85" fill="url(#grad)" />`;
             } else if (state.activeFloor === 4) {
-                color = "#f472b6"; // Fuchsia water
+                color = "#f472b6"; 
                 extraShapes = `<path d="M50,15 C20,50 30,85 50,85 C70,85 80,50 50,15 Z" fill="url(#grad)" />`;
             } else {
-                color = "#f87171"; // Rose crystal
+                color = "#f87171"; 
                 extraShapes = `<polygon points="50,10 90,50 50,90 10,50" fill="url(#grad)" />`;
             }
 
             if (state.isBossActive) {
-                // Boss angry elements
                 faceEyes = `<path d="M28,48 L40,43" stroke="#ff0055" stroke-width="3" /><path d="M72,48 L60,43" stroke="#ff0055" stroke-width="3" />
                             <circle cx="35" cy="52" r="6" fill="#ff0055" /><circle cx="65" cy="52" r="6" fill="#ff0055" />`;
             }
@@ -1056,66 +1348,61 @@
             clearInterval(bossTimerInterval);
         }
 
-        // Timeout back to normal mobs
         function handleBossDefeatTimeout() {
-            showNotification("🚫 討伐失敗！通常の敵に戻ります...", "error");
-            state.monstersDefeated = 0;
+            showNotification("🚫 討伐失敗！作戦を練り直して再挑戦してください。", "error");
             state.isBossActive = false;
+            state.monstersDefeated = 10; 
             spawnMonster();
             updateHUD();
         }
 
-        // Calculate click damage based on level and artifacts
         function getClickDamage() {
             const baseDmg = LEVEL_CONFIGS[state.playerLevel - 1].damage;
             let mult = 1.0;
             if (state.artifactsOwned.blade) {
-                mult += 2.0; // +200%
+                mult += 2.0; 
             }
+            const purpleLvl = state.lordLevels.purple || 0;
+            const rates = [0, 0.15, 0.30, 0.45, 0.60, 0.75, 1.00];
+            mult += (rates[purpleLvl] || 0);
+            
             return Math.floor(baseDmg * mult);
         }
 
-        // Calculate automatic partners DPS
         function getPartnerDPS() {
-            const currentFloorHPMonster = FLOORS_DATA[state.activeFloor].hpNormal;
             let totalBaseDps = 0;
             
-            // Loop through all owned partners across all floors
             PARTNERS_CONFIG.forEach(p => {
-                if (state.partnersOwned[p.id]) {
-                    let dpsPct = 0;
-                    if (p.rarity === 'N') dpsPct = 0.05;
-                    else if (p.rarity === 'R') dpsPct = 0.10;
-                    else if (p.rarity === 'SR') dpsPct = 0.15;
-                    else if (p.rarity === 'SSR') dpsPct = 0.20;
-                    
-                    totalBaseDps += (currentFloorHPMonster * dpsPct);
+                if (p.floor === state.activeFloor && state.partnersOwned[p.id]) {
+                    totalBaseDps += p.baseDmg;
                 }
             });
 
-            // Apply artifact multiplier
             let mult = 1.0;
             if (state.artifactsOwned.projection) {
-                mult += 2.0; // +200%
+                mult += 2.0;
             }
+            const greenLvl = state.lordLevels.green || 0;
+            const rates = [0, 0.15, 0.30, 0.45, 0.60, 0.75, 1.00];
+            mult += (rates[greenLvl] || 0);
             
             return Math.floor(totalBaseDps * mult);
         }
 
-        function handleTapMonster(e) {
+        function handleTapMonster(event) {
             AudioEngine.playTap();
             
-            // Damage Popups
             const dmg = getClickDamage();
             state.monsterHP -= dmg;
             if (state.monsterHP < 0) state.monsterHP = 0;
             
-            createDamagePop(e.clientX, e.clientY, dmg, false);
+            createDamagePop(event.clientX, event.clientY, dmg, false);
             
-            // Screen shake feedback
             const container = document.getElementById('monster-container');
-            container.style.transform = "scale(0.9) rotate(3deg)";
-            setTimeout(() => { container.style.transform = "scale(1) rotate(0deg)"; }, 75);
+            if (container) {
+                container.style.transform = "scale(0.9) rotate(3deg)";
+                setTimeout(() => { container.style.transform = "scale(1) rotate(0deg)"; }, 75);
+            }
             
             updateMonsterHPBar();
             
@@ -1124,41 +1411,44 @@
             }
         }
 
-        // Create popup damage numbers on taps
         function createDamagePop(x, y, amount, isPartner = false) {
+            const bf = document.getElementById('battle-field');
+            if (!bf) return;
             const pop = document.createElement('div');
             pop.className = "damage-pop " + (isPartner ? "text-pink-400 text-xs" : "text-white text-base text-shadow-md");
             pop.innerText = "-" + amount;
             
-            // If on mobile or specific layout adjustments
-            const bounds = document.getElementById('battle-field').getBoundingClientRect();
+            const bounds = bf.getBoundingClientRect();
             const posX = x - bounds.left;
             const posY = y - bounds.top;
             
             pop.style.left = `${posX}px`;
             pop.style.top = `${posY}px`;
             
-            document.getElementById('battle-field').appendChild(pop);
+            bf.appendChild(pop);
             setTimeout(() => pop.remove(), 800);
         }
 
-        // Automatic partners DPS loops
         function autoDPSTick() {
             if (document.getElementById('screen-game').classList.contains('hidden') || state.ending) return;
-            
+
             const dps = getPartnerDPS();
             if (dps <= 0) return;
             
             state.monsterHP -= dps;
             if (state.monsterHP < 0) state.monsterHP = 0;
             
-            // Randomly spawn smaller pops for automated DPS in the monster area
-            const mBounds = document.getElementById('monster-container').getBoundingClientRect();
-            const bfBounds = document.getElementById('battle-field').getBoundingClientRect();
-            const randomX = mBounds.left + Math.random() * mBounds.width - bfBounds.left;
-            const randomY = mBounds.top + Math.random() * mBounds.height - bfBounds.top;
+            const mContainer = document.getElementById('monster-container');
+            const bf = document.getElementById('battle-field');
+            if (mContainer && bf) {
+                const mBounds = mContainer.getBoundingClientRect();
+                const bfBounds = bf.getBoundingClientRect();
+                const randomX = mBounds.left + Math.random() * mBounds.width - bfBounds.left;
+                const randomY = mBounds.top + Math.random() * mBounds.height - bfBounds.top;
+                
+                createDamagePop(bfBounds.left + randomX, bfBounds.top + randomY, dps, true);
+            }
             
-            createDamagePop(bfBounds.left + randomX, bfBounds.top + randomY, dps, true);
             updateMonsterHPBar();
             
             if (state.monsterHP <= 0) {
@@ -1166,96 +1456,106 @@
             }
         }
 
-        // Monster Defeated Reward payouts
         function handleMonsterKilled() {
             const currentConfig = FLOORS_DATA[state.activeFloor];
+            const yellowLvl = state.lordLevels.yellow || 0;
+            const rates = [0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.75];
+            const yellowBonus = rates[yellowLvl] || 0;
             
-            // Reward payout
-            let goldReward = Math.floor(Math.random() * (currentConfig.goldMax - currentConfig.goldMin + 1)) + currentConfig.goldMin;
-            if (state.isBossActive) goldReward *= 3;
+            let baseGold = Math.floor(Math.random() * (currentConfig.goldMax - currentConfig.goldMin + 1)) + currentConfig.goldMin;
+            if (state.isBossActive) baseGold *= 3;
             
-            // Artifact bonus
+            let goldMult = 1.0;
             if (state.artifactsOwned.wealth) {
-                goldReward *= 2;
+                goldMult += 1.0; 
             }
+            goldMult += yellowBonus;
             
+            let goldReward = Math.floor(baseGold * goldMult);
             state.gold += goldReward;
+            state.cumulativeGold += goldReward; 
             AudioEngine.playCoin();
             
-            // Dream Shard chances
-            let shardMultiplier = 1;
+            let shardMult = 1.0;
             if (state.artifactsOwned.memory) {
-                shardMultiplier = 3; // +200% = 3x total
+                shardMult += 2.0; 
             }
+            shardMult += yellowBonus;
             
             if (Math.random() <= currentConfig.shardChance) {
-                state.dreamShards += (100 * shardMultiplier);
-                showNotification(`✨ 夢が晴れ渡る！夢の欠片を100個獲得！`, 'dreamy');
+                const gainedShards = Math.floor(100 * shardMult);
+                state.dreamShards += gainedShards;
+                state.cumulativeShards += gainedShards; 
+                showNotification(`✨ 夢の隙間に閃光が走る！夢の欠片を獲得 (+${gainedShards})`, 'dreamy');
             }
 
-            // Progression checks
+            if (Math.random() <= 0.05) {
+                const gainedEssence = state.artifactsOwned.resonance ? 2 : 1;
+                state.dreamEssence += gainedEssence;
+                state.cumulativeEssence += gainedEssence; 
+                AudioEngine.playDreamyChord();
+                showNotification(`🌀 奇跡降臨！極稀な「夢の神髄」を感知した (+${gainedEssence})！`, 'success');
+                document.getElementById('badge-essence-ready').classList.remove('hidden');
+            }
+
             if (state.isBossActive) {
-                // Defeated Boss! Advance to next floors or pop hidden triggers
                 stopBossTimer();
                 showNotification(`🎉 階層ボス「${currentConfig.boss}」の討伐に成功！`, 'success');
                 
                 if (state.activeFloor === 5) {
-                    // Beaten final Floor 5 Boss! Triggers Story Endings
                     handleFinalFloorBossCleared();
                     return;
                 } else {
-                    // Unlock next floor automatically
                     const nextFloor = state.activeFloor + 1;
                     if (state.maxFloorReached < nextFloor) {
                         state.maxFloorReached = nextFloor;
                     }
                     state.activeFloor = nextFloor;
                     state.monstersDefeated = 0;
-                    showNotification(`🚪 夢の深淵へ！第${nextFloor}階層「${FLOORS_DATA[nextFloor].name}」に到達しました`, 'success');
+                    state.isBossActive = false;
+                    showNotification(`🚪 夢の深淵へ！第${nextFloor}階層「${FLOORS_DATA[nextFloor].name}」が解放されました`, 'success');
                 }
             } else {
-                state.monstersDefeated++;
+                if (state.monstersDefeated < 10) {
+                    state.monstersDefeated++;
+                }
             }
             
             spawnMonster();
             updateHUD();
         }
 
-        // Evaluate Endings on Floor 5 clear
         function handleFinalFloorBossCleared() {
             if (state.artifactsOwned.hidden) {
-                // If has ??? Hidden Tool -> Go to glitch transition page
                 document.getElementById('screen-game').classList.add('hidden');
                 document.getElementById('screen-glitch-portal').classList.remove('hidden');
                 AudioEngine.playDreamyChord();
             } else {
-                // Normal ending
                 document.getElementById('screen-game').classList.add('hidden');
                 document.getElementById('screen-normal-ending').classList.remove('hidden');
+                openAchievementsModal(); 
             }
         }
 
-        // Update Health Bar UI Elements
         function updateMonsterHPBar() {
             const pct = (state.monsterHP / state.monsterMaxHP) * 100;
             document.getElementById('monster-hp-fill').style.width = `${pct}%`;
             document.getElementById('monster-hp-text').innerText = `${Math.floor(state.monsterHP)} / ${state.monsterMaxHP}`;
         }
 
-        // Refresh Assets, Levels and Stats Counters across UI
         function updateHUD() {
             const floor = FLOORS_DATA[state.activeFloor];
             
-            document.getElementById('header-floor-name').innerText = `第${state.activeFloor}階層 ${floor.name}`;
+            document.getElementById('header-floor-name').innerText = `${state.activeFloor}F ${floor.name}`;
             document.getElementById('hud-gold').innerText = Math.floor(state.gold);
             document.getElementById('hud-dream-shards').innerText = state.dreamShards;
             document.getElementById('hud-shop-shards').innerText = state.shopShards;
+            document.getElementById('hud-dream-essence').innerText = state.dreamEssence;
             document.getElementById('hud-floor-limit').innerText = `Lv${floor.capLevel}`;
             
             document.getElementById('hud-click-damage').innerText = getClickDamage();
             document.getElementById('hud-partner-dps').innerText = getPartnerDPS() + "/s";
             
-            // Refresh Active Upgrades UI values
             document.getElementById('upgrade-lvl').innerText = state.playerLevel;
             document.getElementById('upgrade-dmg').innerText = LEVEL_CONFIGS[state.playerLevel - 1].damage;
             
@@ -1268,35 +1568,43 @@
                 document.getElementById('upgrade-button').disabled = false;
             }
 
-            // Floor progress display
             if (state.isBossActive) {
                 document.getElementById('monster-title').innerText = `【BOSS】 ${state.monsterName}`;
-                document.getElementById('monster-kills').innerText = "☠️ BOSS戦";
+                document.getElementById('monster-kills').innerText = "☠️ 階層試練";
             } else {
                 document.getElementById('monster-title').innerText = state.monsterName;
-                document.getElementById('monster-kills').innerText = `通常の敵: ${state.monstersDefeated}/10`;
+                if (state.monstersDefeated >= 10) {
+                    document.getElementById('monster-kills').innerText = "討伐完了（ボス挑戦可能）";
+                } else {
+                    document.getElementById('monster-kills').innerText = `討伐数: ${state.monstersDefeated}/10`;
+                }
             }
 
-            // Orbiting partners representation
             renderOrbitingPartners();
             
-            // Dynamic theme adjustments according to current Floor background color gradients
             const overlay = document.getElementById('floor-ambient-overlay');
-            overlay.className = `absolute inset-0 pointer-events-none transition-all duration-1000 bg-gradient-to-b ${floor.color}`;
+            if (overlay) {
+                overlay.className = `absolute inset-0 pointer-events-none transition-all duration-1000 bg-gradient-to-b ${floor.color}`;
+            }
+
+            if (state.dreamEssence > 0) {
+                document.getElementById('badge-essence-ready').classList.remove('hidden');
+            } else {
+                document.getElementById('badge-essence-ready').classList.add('hidden');
+            }
         }
 
-        // Draw Owned Partners orbiting our monster visually inside battle screen
         function renderOrbitingPartners() {
             const container = document.getElementById('orbiting-partners');
+            if (!container) return;
             container.innerHTML = "";
             
-            // Grab owned partners of this active floor
             let ownedInCurrentFloor = PARTNERS_CONFIG.filter(p => p.floor === state.activeFloor && state.partnersOwned[p.id]);
             
             ownedInCurrentFloor.forEach((p, idx) => {
                 const angle = (idx / ownedInCurrentFloor.length) * 2 * Math.PI;
-                const radius = 68; // orbit radius px
-                const x = Math.cos(angle) * radius + 96 - 16; // centered around 192px box
+                const radius = 68; 
+                const x = Math.cos(angle) * radius + 96 - 16; 
                 const y = Math.sin(angle) * radius + 96 - 16;
                 
                 container.innerHTML += `
@@ -1307,47 +1615,129 @@
             });
         }
 
-        // Tab Swapping Controller
         function switchTab(tabId) {
-            // Hide all tabs
             document.getElementById('tab-upgrades').classList.add('hidden');
             document.getElementById('tab-partners').classList.add('hidden');
             document.getElementById('tab-gacha').classList.add('hidden');
+            document.getElementById('tab-lords').classList.add('hidden');
             document.getElementById('tab-artifacts').classList.add('hidden');
             
-            // Remove active style from all navigation buttons
-            const navIds = ['upgrades', 'partners', 'gacha', 'artifacts'];
+            const navIds = ['upgrades', 'partners', 'gacha', 'lords', 'artifacts'];
             navIds.forEach(id => {
                 const btn = document.getElementById(`tab-btn-${id}`);
-                btn.className = "flex-1 py-3 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-1";
+                if (btn) {
+                    btn.className = "flex-1 py-2.5 text-slate-400 border-b-2 border-transparent font-semibold transition flex flex-col items-center gap-0.5";
+                }
             });
             
-            // Show selected tab
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             
-            // Style selected button
             const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-            activeBtn.className = "flex-1 py-3 text-purple-400 border-b-2 border-purple-500 font-bold transition flex flex-col items-center gap-1 bg-purple-950/10";
+            if (activeBtn) {
+                activeBtn.className = "flex-1 py-2.5 text-purple-400 border-b-2 border-purple-500 font-bold transition flex flex-col items-center gap-0.5 bg-purple-950/10";
+            }
             
             if (tabId === 'partners') {
                 renderPartnersGrid();
             } else if (tabId === 'artifacts') {
                 renderArtifactsList();
+            } else if (tabId === 'lords') {
+                renderLordsList();
             }
         }
 
-        // Map Drawer Switch Actions
         function openMap() {
             renderFloorPortals();
             document.getElementById('modal-map').classList.remove('hidden');
         }
+
         function closeMap() {
             document.getElementById('modal-map').classList.add('hidden');
         }
 
-        // Render portals based on unlocked levels
+        // --- 7. PROGRESS DASHBOARD & MULTI-TURN LORD GALLERY ---
+        function openStatusModal() {
+            document.getElementById('stat-player-dmg').innerText = getClickDamage().toLocaleString();
+            document.getElementById('stat-partner-dps').innerText = getPartnerDPS().toLocaleString() + "/s";
+            document.getElementById('stat-gold').innerText = Math.floor(state.gold).toLocaleString();
+            document.getElementById('stat-shards').innerText = state.dreamShards.toLocaleString();
+
+            let collectedCount = 0;
+            PARTNERS_CONFIG.forEach(p => {
+                if (state.partnersOwned[p.id]) collectedCount++;
+            });
+            document.getElementById('stat-partners-count').innerText = collectedCount;
+            const pct = (collectedCount / 20) * 100;
+            document.getElementById('stat-partners-bar').style.width = `${pct}%`;
+
+            renderShowcaseLord();
+
+            document.getElementById('modal-status').classList.remove('hidden');
+            AudioEngine.playDreamyChord();
+        }
+
+        function closeStatusModal() {
+            document.getElementById('modal-status').classList.add('hidden');
+        }
+
+        function navigateShowcase(direction) {
+            state.showcaseLordIndex = (state.showcaseLordIndex + direction + 3) % 3;
+            renderShowcaseLord();
+            AudioEngine.playTap();
+        }
+
+        function renderShowcaseLord() {
+            const keys = ['purple', 'green', 'yellow'];
+            const activeKey = keys[state.showcaseLordIndex];
+            const lord = PROTAGONISTS_CONFIG[activeKey];
+            const lvl = state.lordLevels[activeKey] || 0;
+            const isLocked = lvl === 0;
+
+            const nameEl = document.getElementById('showcase-name');
+            const badgeEl = document.getElementById('showcase-status-badge');
+            const descEl = document.getElementById('showcase-desc');
+            const multEl = document.getElementById('showcase-multiplier');
+            const avatarWrapper = document.getElementById('showcase-avatar-wrapper');
+            const showcaseCard = document.getElementById('showcase-card');
+
+            nameEl.innerText = lord.name;
+            descEl.innerText = lord.desc;
+
+            let imgFilter = "";
+            let imgOpacity = "opacity-100";
+            let glowColor = "rgba(168,85,247,0.45)"; 
+            if (activeKey === 'green') glowColor = "rgba(16,185,129,0.45)";
+            if (activeKey === 'yellow') glowColor = "rgba(234,179,8,0.45)";
+
+            if (isLocked) {
+                imgFilter = "filter: brightness(0);";
+                imgOpacity = "opacity-55";
+            } else {
+                imgFilter = `filter: drop-shadow(0 15px 30px ${glowColor});`;
+                imgOpacity = "opacity-100";
+            }
+
+            avatarWrapper.innerHTML = `
+                <img src="images/${activeKey}2.png" alt="${lord.name}" class="h-64 w-auto object-contain transition duration-500 ${imgOpacity}" style="${imgFilter}" onerror="this.onerror=null; this.src='https://placehold.co/240x240/1e1b4b/cbd5e1?text=${activeKey}1'"/>
+            `;
+
+            if (isLocked) {
+                badgeEl.innerText = "未解放 (昏睡状態)";
+                badgeEl.className = "text-[10px] px-2.5 py-0.5 rounded-full inline-block mt-1.5 font-bold bg-slate-950 text-rose-500 border border-rose-500/30";
+                multEl.innerText = `効果: ${lord.effectText} +0%`;
+                showcaseCard.className = "flex-1 flex flex-col items-center py-4 relative transition duration-300 rounded-2xl bg-black/95 saturate-50 min-h-[460px] border border-slate-900/60";
+            } else {
+                badgeEl.innerText = `${lvl}等 覚醒`;
+                badgeEl.className = "text-[10px] px-2.5 py-0.5 rounded-full inline-block mt-1.5 font-bold bg-teal-950 text-teal-300 border border-teal-500/30";
+                const activeBonus = lord.getBonus(lvl);
+                multEl.innerText = `効果: ${lord.effectText} +${activeBonus}%`;
+                showcaseCard.className = `flex-1 flex flex-col items-center py-4 relative transition duration-300 rounded-2xl bg-gradient-to-b from-[#1c123c] via-[#0b061d] to-[#04020a] border border-purple-500/25 shadow-[0_0_35px_${glowColor}] min-h-[460px]`;
+            }
+        }
+
         function renderFloorPortals() {
             const list = document.getElementById('floor-portals-list');
+            if (!list) return;
             list.innerHTML = "";
             
             for (let fNum = 1; fNum <= 5; fNum++) {
@@ -1392,42 +1782,18 @@
             spawnMonster();
             updateHUD();
             
-            // update pools indicators if viewing pools
             state.gachaViewingFloor = floorNum;
-            updateGachaFloorHUD();
-        }
-
-        // Player upgrade action
-        function upgradePlayer() {
-            if (state.playerLevel >= 25) return;
-            
-            const nextData = LEVEL_CONFIGS[state.playerLevel - 1];
-            const currentFloorCap = FLOORS_DATA[state.maxFloorReached].capLevel; // Base cap on deepest floor reached to prevent softlock
-            
-            if (state.playerLevel >= currentFloorCap) {
-                showNotification(`🚫 レベル上限に達しました！ボスを倒して深層へ進んでください。`, "error");
-                return;
-            }
-
-            if (state.gold >= nextData.cost) {
-                state.gold -= nextData.cost;
-                state.playerLevel++;
-                AudioEngine.playUpgrade();
-                showNotification(`💪 意識が覚醒！レベルがLv${state.playerLevel}にアップ！`, "success");
-                updateHUD();
-            } else {
-                showNotification(`❌ ゴールドが不足しています。必要: 💰 ${nextData.cost}`, "error");
+            if (typeof updateGachaFloorHUD === 'function') {
+                updateGachaFloorHUD();
             }
         }
 
-        // Partners Index Renderer
         function renderPartnersGrid() {
             const grid = document.getElementById('partners-grid');
+            if (!grid) return;
             grid.innerHTML = "";
             
             let countCollected = 0;
-            
-            // List partners belonging to the current selected cardpool
             const targetFloorNum = state.gachaViewingFloor;
             const floorPartners = PARTNERS_CONFIG.filter(p => p.floor === targetFloorNum);
             
@@ -1449,19 +1815,17 @@
                 
                 grid.innerHTML += `
                     <div class="border ${borderCol} ${bgStyle} rounded-xl p-2.5 flex items-center gap-2.5 relative overflow-hidden transition">
-                        <!-- Rarity badge tag -->
                         <span class="absolute top-1 right-1 text-[8px] font-black tracking-widest px-1 rounded ${p.rarity === 'SSR' ? 'bg-yellow-500 text-yellow-950' : (p.rarity === 'SR' ? 'bg-purple-500 text-purple-950' : (p.rarity === 'R' ? 'bg-blue-500 text-blue-950' : 'bg-slate-500 text-slate-900'))}">${p.rarity}</span>
-                        
                         <div class="text-2xl">${owned ? p.emoji : "❓"}</div>
                         <div>
                             <div class="text-[11px] font-bold ${owned ? 'text-slate-100' : 'text-slate-500'}">${owned ? p.name : "未獲得"}</div>
+                            <div class="text-[10px] text-pink-400 mt-0.5">効果: <span class="orbitron font-semibold">+${p.baseDmg}/s</span></div>
                             <div class="text-[9px] text-slate-400 mt-0.5">欠片: <span class="orbitron font-bold text-pink-400">${fragments}</span></div>
                         </div>
                     </div>
                 `;
             });
 
-            // Count total collected partners overall
             let totalOverallCollected = 0;
             PARTNERS_CONFIG.forEach(p => {
                 if (state.partnersOwned[p.id]) totalOverallCollected++;
@@ -1469,13 +1833,33 @@
             document.getElementById('partner-collected-count').innerText = totalOverallCollected;
         }
 
-        // Handle Gacha Pulls odds (30% Character, 70% fragments)
+        function upgradePlayer() {
+            if (state.playerLevel >= 25) return;
+            
+            const nextData = LEVEL_CONFIGS[state.playerLevel - 1];
+            const currentFloorCap = FLOORS_DATA[state.maxFloorReached].capLevel; 
+            
+            if (state.playerLevel >= currentFloorCap) {
+                showNotification(`🚫 意識のレベル上限に達しました。現在の最大上限は Lv${currentFloorCap} です。`, "error");
+                return;
+            }
+
+            if (state.gold >= nextData.cost) {
+                state.gold -= nextData.cost;
+                state.playerLevel++;
+                AudioEngine.playUpgrade();
+                showNotification(`💪 意識が覚醒！レベルがLv${state.playerLevel}にアップ！`, "success");
+                updateHUD();
+            } else {
+                showNotification(`❌ ゴールドが不足しています。必要: 💰 ${nextData.cost}`, "error");
+            }
+        }
+
         function changeGachaPool(direction) {
             let nextPool = state.gachaViewingFloor + direction;
             if (nextPool >= 1 && nextPool <= 5) {
-                // Ensure they can't browse unreached floor card pools
                 if (nextPool > state.maxFloorReached) {
-                    showNotification(`🔒 深層の夢が未解放なため、このガチャは利用できません！`, "error");
+                    showNotification(`🔒 深層の夢が未解放なため、このガチャプールはまだ利用できません！`, "error");
                     return;
                 }
                 state.gachaViewingFloor = nextPool;
@@ -1490,7 +1874,6 @@
             }
         }
 
-        // Execute Draws
         function pullGacha(rolls) {
             const cost = rolls * 100;
             if (state.dreamShards < cost) {
@@ -1506,10 +1889,6 @@
             const currentFloorPartners = PARTNERS_CONFIG.filter(p => p.floor === targetFloor);
             
             for (let r = 0; r < rolls; r++) {
-                const randomPullType = Math.random();
-                
-                // Fetch a random partner according to rarity distribution:
-                // N: 40%, R: 30%, SR: 20%, SSR: 10%
                 let selectedPartner = null;
                 const rarityRoll = Math.random();
                 
@@ -1523,12 +1902,12 @@
                     selectedPartner = currentFloorPartners.find(p => p.rarity === 'SSR');
                 }
 
-                if (randomPullType < 0.30) {
-                    // Pull character
+                const rollType = Math.random();
+                
+                if (rollType < 0.30) {
                     const alreadyOwned = state.partnersOwned[selectedPartner.id];
                     
                     if (alreadyOwned) {
-                        // Duplicate character reward payout: N: 1, R: 2, SR: 3, SSR: 5 shop shards
                         let rewardShopShards = 1;
                         if (selectedPartner.rarity === 'R') rewardShopShards = 2;
                         else if (selectedPartner.rarity === 'SR') rewardShopShards = 3;
@@ -1541,22 +1920,28 @@
                             reward: rewardShopShards
                         });
                     } else {
-                        // Brand new character
                         state.partnersOwned[selectedPartner.id] = true;
                         results.push({
                             type: 'character_new',
                             partner: selectedPartner
                         });
                         
-                        // Check if floor completed
                         checkFloorCompletion(targetFloor);
                     }
                 } else {
-                    // Pull fragment
+                    const characterOwned = state.partnersOwned[selectedPartner.id];
+                    let refunded = false;
+                    if (characterOwned) {
+                        state.dreamShards += 20;
+                        state.cumulativeShards += 20; 
+                        refunded = true;
+                    }
+
                     state.fragments[selectedPartner.id] = (state.fragments[selectedPartner.id] || 0) + 1;
                     results.push({
                         type: 'fragment',
-                        partner: selectedPartner
+                        partner: selectedPartner,
+                        refunded: refunded
                     });
                 }
             }
@@ -1565,20 +1950,18 @@
             updateHUD();
         }
 
-        // Check if floor index is complete
         function checkFloorCompletion(floorNum) {
             const floorPartners = PARTNERS_CONFIG.filter(p => p.floor === floorNum);
             const allCollected = floorPartners.every(p => state.partnersOwned[p.id]);
             
             if (allCollected) {
                 setTimeout(() => {
-                    showNotification(`🌟 （夢の領域が晴れ渡り、鮮明になった...）`, "success");
+                    showNotification(`🌟 （第${floorNum}階層の夢境が鮮明になった……）`, "success");
                     AudioEngine.playDreamyChord();
                 }, 1000);
             }
         }
 
-        // Melt fragments 1:1 to shop shards
         function meltAllFragments() {
             let totalMelted = 0;
             Object.keys(state.fragments).forEach(id => {
@@ -1592,7 +1975,7 @@
             if (totalMelted > 0) {
                 state.shopShards += totalMelted;
                 AudioEngine.playCoin();
-                showNotification(`💎 溶解成功！${totalMelted}個の欠片を1:1でショップの欠片${totalMelted}個に交換しました！`, "success");
+                showNotification(`💎 溶解成功！${totalMelted}個の特定キャラの欠片を1:1でショップの欠片に変換しました！`, "success");
                 updateHUD();
                 if (!document.getElementById('tab-partners').classList.contains('hidden')) {
                     renderPartnersGrid();
@@ -1602,9 +1985,9 @@
             }
         }
 
-        // Display pulls result splash
         function displayGachaResults(results) {
             const container = document.getElementById('gacha-rewards-container');
+            if (!container) return;
             container.innerHTML = "";
             
             results.forEach(res => {
@@ -1613,13 +1996,14 @@
                 
                 if (res.type === 'character_new') {
                     divClass += " border-emerald-500/30 text-emerald-400";
-                    text = `<div>✨ 新しいパートナーを獲得: <span class="font-bold">${res.partner.emoji} ${res.partner.name}</span></div> <span class="text-[9px] px-1 bg-emerald-500 text-emerald-950 rounded font-black">NEW</span>`;
+                    text = `<div>✨ パートナー獲得: <span class="font-bold">${res.partner.emoji} ${res.partner.name}</span></div> <span class="text-[9px] px-1 bg-emerald-500 text-emerald-950 rounded font-black">NEW</span>`;
                 } else if (res.type === 'character_duplicate') {
                     divClass += " border-amber-500/30 text-amber-300";
-                    text = `<div>👥 すでに所持しています <span class="font-bold">${res.partner.name}</span></div> <span class="font-bold text-[9px] text-amber-500 font-mono">+${res.reward} 🔮 鑑定物</span>`;
+                    text = `<div>👥 重複獲得: <span class="font-bold">${res.partner.name}</span></div> <span class="font-bold text-[9px] text-amber-500 font-mono">+${res.reward} 🔮 鑑定物</span>`;
                 } else {
                     divClass += " border-slate-800 text-slate-300";
-                    text = `<div>🧩 専用の欠片を獲得: <span class="font-bold">${res.partner.emoji} ${res.partner.name}</span></div> <span class="font-medium text-[10px] text-pink-400">+1 欠片</span>`;
+                    const refundLabel = res.refunded ? `<span class="text-[8px] text-purple-400 ml-1">(還元 ✨+20)</span>` : "";
+                    text = `<div>🧩 欠片獲得: <span class="font-bold">${res.partner.emoji} ${res.partner.name}</span>${refundLabel}</div> <span class="font-medium text-[10px] text-pink-400">+1 欠片</span>`;
                 }
                 
                 container.innerHTML += `<div class="${divClass}">${text}</div>`;
@@ -1632,17 +2016,147 @@
             document.getElementById('modal-gacha-result').classList.add('hidden');
         }
 
-        // Artifact shop data
-        const ARTIFACT_SHOP_ITEMS = [
-            { id: 'wealth', name: '富の妄想', cost: 50, desc: 'ゴールドの獲得量が100%増加します', icon: 'fa-sack-dollar' },
-            { id: 'blade', name: '覚醒の刃', cost: 80, desc: 'プレイヤーのクリックダメージが200%増加します', icon: 'fa-sword' },
-            { id: 'projection', name: '潜在意識の投影', cost: 120, desc: 'パートナーの自動DPSが200%増加します', icon: 'fa-arrows-spin' },
-            { id: 'memory', name: '記憶の欠片', cost: 200, desc: '夢の欠片の獲得量が200%増加します', icon: 'fa-brain' },
-            { id: 'hidden', name: '???', cost: 300, desc: '謎に包まれた隠しアイテム（図鑑コンプリートと合わせることで、隠しボス「ルシア」のシナリオが解放されます）', icon: 'fa-circle-question' }
-        ];
+        // --- 8. RESOURCING MUTUAL EXCHANGE HUB ACTIONS ---
+        function exchangeGoldToShards() {
+            if (state.gold >= 10000) {
+                state.gold -= 10000;
+                state.dreamShards += 1000;
+                state.cumulativeShards += 1000; 
+                AudioEngine.playCoin();
+                updateHUD();
+                showNotification("💰 10,000ゴールドを ✨ 1,000夢の欠片に両替しました！", "success");
+            } else {
+                showNotification("❌ ゴールドが不足しています！(必要: 💰 10,000)", "error");
+            }
+        }
+
+        function exchangeShardsToGold() {
+            if (state.dreamShards >= 1000) {
+                state.dreamShards -= 1000;
+                state.gold += 10000;
+                state.cumulativeGold += 10000; 
+                AudioEngine.playCoin();
+                updateHUD();
+                showNotification("✨ 1,000夢の欠片を 💰 10,000ゴールドに両替しました！", "success");
+            } else {
+                showNotification("❌ 夢の欠片が不足しています！(必要: ✨ 1,000)", "error");
+            }
+        }
+
+        function exchangeGoldToEssence() {
+            if (state.gold >= 10000) {
+                state.gold -= 10000;
+                state.dreamEssence += 1;
+                state.cumulativeEssence += 1; 
+                AudioEngine.playCoin();
+                updateHUD();
+                showNotification("💰 10,000ゴールドを 🌀 1夢の神髄に両替しました！", "success");
+            } else {
+                showNotification("❌ ゴールドが不足しています！(必要: 💰 10,000)", "error");
+            }
+        }
+
+        function exchangeEssenceToGold() {
+            if (state.dreamEssence >= 1) {
+                state.dreamEssence -= 1;
+                state.gold += 10000;
+                state.cumulativeGold += 10000; 
+                AudioEngine.playCoin();
+                updateHUD();
+                showNotification("🌀 1夢の神髄を 💰 10,000ゴールドに両替しました！", "success");
+            } else {
+                showNotification("❌ 夢の神髄が不足しています！(必要: 🌀 1)", "error");
+            }
+        }
+
+        function renderLordsList() {
+            const container = document.getElementById('lords-cards-container');
+            if (!container) return;
+            
+            let htmlStr = "";
+            document.getElementById('lords-essence-count').innerText = state.dreamEssence;
+            
+            let totalCollected = 0;
+            PARTNERS_CONFIG.forEach(p => {
+                if (state.partnersOwned[p.id]) totalCollected++;
+            });
+            const collectionPct = ((totalCollected / 20) * 100).toFixed(0);
+
+            htmlStr += `
+                <div class="grid grid-cols-2 gap-2 bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/80 text-center text-[10px] text-slate-400 mb-3">
+                    <div>
+                        <span>👆 現在タップ火力</span>
+                        <div class="font-bold text-indigo-400 text-xs mt-0.5 orbitron">${getClickDamage().toLocaleString()}</div>
+                    </div>
+                    <div>
+                        <span>📊 全図鑑収集度</span>
+                        <div class="font-bold text-pink-400 text-xs mt-0.5 orbitron">${collectionPct}% (${totalCollected}/20)</div>
+                    </div>
+                </div>
+            `;
+
+            Object.keys(PROTAGONISTS_CONFIG).forEach(key => {
+                const lord = PROTAGONISTS_CONFIG[key];
+                const lvl = state.lordLevels[key] || 0;
+                const isMax = lvl >= 6; 
+                const isLocked = lvl === 0;
+                const cost = getLordUpgradeCost(lvl);
+
+                const tokenHTML = getLordVisualHTML(key, isLocked);
+
+                htmlStr += `
+                    <div class="border ${lord.color.split(' ')[0]} ${lord.bg} rounded-xl p-3 flex gap-3 items-center relative overflow-hidden mb-3">
+                        <div class="w-16 h-20 rounded-lg bg-slate-950 border border-slate-800 flex justify-center items-center overflow-hidden shrink-0">
+                            ${tokenHTML}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-xs text-slate-100 truncate">${lord.name}</h4>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-950 font-black text-teal-400 border border-teal-500/20">${isMax ? '極限等 (MAX)' : lvl + '等 覚醒'}</span>
+                            </div>
+                            <p class="text-[9px] text-slate-400 mt-1 leading-normal line-clamp-2">${lord.desc}</p>
+                            <div class="flex justify-between items-center mt-2.5">
+                                <div class="text-[10px] text-teal-300 font-semibold flex items-center gap-1">
+                                    <i class="fa-solid ${lord.icon}"></i>
+                                    <span>効果: ${lord.effectText} +${lord.getBonus(lvl)}%</span>
+                                </div>
+                                <button onclick="upgradeLord('${key}')" ${isMax ? 'disabled' : ''} class="${isMax ? 'bg-slate-800 cursor-not-allowed text-slate-500 border border-slate-700' : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white'} px-3 py-1 rounded-lg text-[9px] font-bold shadow transition active:scale-95 flex items-center gap-1">
+                                    <span>${isMax ? '極限' : '覚醒'}</span>
+                                    ${isMax ? '' : `<span class="font-mono">🌀 ${cost}</span>`}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = htmlStr;
+        }
+
+        function upgradeLord(key) {
+            const currentLvl = state.lordLevels[key] || 0;
+            if (currentLvl >= 6) {
+                showNotification(`🚫 ${PROTAGONISTS_CONFIG[key].name} は最大レベルに達しています！`, "error");
+                return;
+            }
+
+            const cost = getLordUpgradeCost(currentLvl);
+
+            if (state.dreamEssence >= cost) {
+                state.dreamEssence -= cost;
+                state.lordLevels[key] = currentLvl + 1;
+                AudioEngine.playUpgrade();
+                showNotification(`🌀 ${PROTAGONISTS_CONFIG[key].name} の覚醒段階が ${state.lordLevels[key]}等 に昇格！`, "success");
+                updateHUD();
+                renderLordsList();
+            } else {
+                showNotification(`❌ 「夢の神髄 🌀」が不足しています！必要: 🌀 ${cost}`, "error");
+            }
+        }
 
         function renderArtifactsList() {
             const list = document.getElementById('artifacts-list');
+            if (!list) return;
             list.innerHTML = "";
             
             document.getElementById('artifact-shop-shards-count').innerText = state.shopShards;
@@ -1685,25 +2199,24 @@
                 state.shopShards -= cost;
                 state.artifactsOwned[id] = true;
                 AudioEngine.playUpgrade();
-                showNotification(`🔮 アーティファクト「${ARTIFACT_SHOP_ITEMS.find(i => i.id === id).name}」を購入しました！`, "success");
+                showNotification(`🔮 神器「${ARTIFACT_SHOP_ITEMS.find(i => i.id === id).name}」を解放しました！`, "success");
                 updateHUD();
                 renderArtifactsList();
             } else {
-                showNotification(`❌ ショップの欠片が不足しています！必要: 🔮 ${cost}`, "error");
+                showNotification(`❌ 鑑定物が不足しています！必要: 🔮 ${cost}`, "error");
             }
         }
 
-        // Transition to pentagram setup
         function enterPentagramScreen() {
             document.getElementById('screen-glitch-portal').classList.add('hidden');
             document.getElementById('screen-pentagram').classList.remove('hidden');
             
-            // Execute pentagram check calculations
+            // 進入五芒星維持主線音樂，不播放Boss音樂
+            
             runPentagramChecks();
         }
 
         function runPentagramChecks() {
-            // Check status of each floor's collection
             const checkFloor = (fNum) => {
                 const floorPartners = PARTNERS_CONFIG.filter(p => p.floor === fNum);
                 return floorPartners.every(p => state.partnersOwned[p.id]);
@@ -1715,15 +2228,16 @@
             state.checkedF4 = checkFloor(4);
             state.checkedF5 = checkFloor(5);
 
-            // Populate vertex glows on Pentagram star
             const renderNodeState = (vertexId, isComplete) => {
                 const el = document.getElementById(`star-vertex-${vertexId}`);
-                if (isComplete) {
-                    el.className = "absolute w-10 h-10 rounded-full bg-yellow-500 border-2 border-white flex justify-center items-center z-10 transition shadow-[0_0_15px_rgba(234,179,8,0.8)] text-yellow-950 font-bold";
-                    el.innerHTML = `<i class="fa-solid fa-star"></i>`;
-                } else {
-                    el.className = "absolute w-10 h-10 rounded-full bg-slate-900 border border-rose-500/50 flex justify-center items-center z-10 transition text-rose-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] font-bold";
-                    el.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+                if (el) {
+                    if (isComplete) {
+                        el.className = "absolute w-10 h-10 rounded-full bg-yellow-500 border-2 border-white flex justify-center items-center z-10 transition shadow-[0_0_15px_rgba(234,179,8,0.8)] text-yellow-950 font-bold";
+                        el.innerHTML = `<i class="fa-solid fa-star"></i>`;
+                    } else {
+                        el.className = "absolute w-10 h-10 rounded-full bg-slate-900 border border-rose-500/50 flex justify-center items-center z-10 transition text-rose-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] font-bold";
+                        el.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+                    }
                 }
             };
 
@@ -1733,64 +2247,79 @@
             renderNodeState(4, state.checkedF4);
             renderNodeState(5, state.checkedF5);
 
-            // Compute Final Battle values
-            // 1. Player damage (Base 800 at Level 25)
-            const basePlayerDmg = 800;
-            state.finalPlayerDmg = state.checkedF1 ? (basePlayerDmg * 500) : basePlayerDmg; // x500 if complete
+            let basePlayerDmg = 800;
+            let playerMult = 1.0;
+            if (state.artifactsOwned.blade) {
+                playerMult += 2.0; 
+            }
+            playerMult += (PROTAGONISTS_CONFIG.purple.getBonus(state.lordLevels.purple || 0) / 100); 
+            basePlayerDmg = Math.floor(basePlayerDmg * playerMult);
 
-            // 2. Partner damage (F1-5 base sum = 6050)
-            const basePartnerDPS = 6050;
-            state.finalPartnerDPS = state.checkedF2 ? (basePartnerDPS * 500) : basePartnerDPS; // x500 if complete
+            state.finalPlayerDmg = state.checkedF1 ? (basePlayerDmg * 500) : basePlayerDmg;
 
-            // 3. F5 Player value halving penalty if not complete
+            let basePartnerDPS = 0;
+            PARTNERS_CONFIG.forEach(p => {
+                if (state.partnersOwned[p.id]) {
+                    basePartnerDPS += p.baseDmg;
+                }
+            });
+
+            let partnerMult = 1.0;
+            if (state.artifactsOwned.projection) {
+                partnerMult += 2.0;
+            }
+            partnerMult += (PROTAGONISTS_CONFIG.green.getBonus(state.lordLevels.green || 0) / 100);
+            basePartnerDPS = Math.floor(basePartnerDPS * partnerMult);
+
+            state.finalPartnerDPS = state.checkedF2 ? (basePartnerDPS * 1800) : basePartnerDPS;
+
             if (!state.checkedF5) {
                 state.finalPlayerDmg = Math.floor(state.finalPlayerDmg / 2);
                 state.finalPartnerDPS = Math.floor(state.finalPartnerDPS / 2);
             }
 
-            // Render details check logs
             const logs = document.getElementById('star-stats-logs');
-            logs.innerHTML = `
-                <div class="font-bold text-xs text-purple-300 border-b border-purple-500/20 pb-1 mb-1 flex justify-between">
-                    <span>魔法陣バフ/デバフ判定</span>
-                    <span>状態</span>
-                </div>
-                
-                <div class="flex justify-between items-center ${state.checkedF1 ? 'text-yellow-400' : 'text-rose-400'}">
-                    <span>Ⅰ. 第1階層のパートナーを収集しましたか？ (ダメージ500倍: ${state.checkedF1 ? '2400 ➜ 1,200,000' : 'そのまま'})</span>
-                    <span class="font-bold">${state.checkedF1 ? '✨ クリア' : '❌ 呪い'}</span>
-                </div>
-                <div class="flex justify-between items-center ${state.checkedF2 ? 'text-yellow-400' : 'text-rose-400'}">
-                    <span>Ⅱ. 第2階層のパートナーを収集しましたか？ (パートナーダメージ500%増加)</span>
-                    <span class="font-bold">${state.checkedF2 ? '✨ クリア' : '❌ 呪い'}</span>
-                </div>
-                <div class="flex justify-between items-center ${state.checkedF3 ? 'text-yellow-400' : 'text-rose-400'}">
-                    <span>Ⅲ. 第3階層のパートナーを収集しましたか？ (戦闘時間 30秒 ➜ 60秒)</span>
-                    <span class="font-bold">${state.checkedF3 ? '✨ クリア' : '❌ 呪い'}</span>
-                </div>
-                <div class="flex justify-between items-center ${state.checkedF4 ? 'text-yellow-400' : 'text-rose-400'}">
-                    <span>Ⅳ. 第4階層のパートナーを収集しましたか？ (ボスが回復するのを防ぐ)</span>
-                    <span class="font-bold">${state.checkedF4 ? '✨ クリア' : '❌ 呪い'}</span>
-                </div>
-                <div class="flex justify-between items-center ${state.checkedF5 ? 'text-yellow-400' : 'text-rose-400'}">
-                    <span>Ⅴ. 第5階層のパートナーを収集しましたか？ (プレイヤー能力値半減を回避)</span>
-                    <span class="font-bold">${state.checkedF5 ? '✨ クリア' : '❌ 呪い'}</span>
-                </div>
-            `;
+            if (logs) {
+                logs.innerHTML = `
+                    <div class="font-bold text-xs text-purple-300 border-b border-purple-500/20 pb-1 mb-1 flex justify-between">
+                        <span>魔法陣 バフ/デバフ 判定</span>
+                        <span>状態</span>
+                    </div>
+                    <div class="flex justify-between items-center ${state.checkedF1 ? 'text-yellow-400' : 'text-rose-400'}">
+                        <span>Ⅰ. 第1階層完全収集？ (タップ威力 500倍)</span>
+                        <span class="font-bold">${state.checkedF1 ? '✨ 解放' : '❌ 呪い'}</span>
+                    </div>
+                    <div class="flex justify-between items-center ${state.checkedF2 ? 'text-yellow-400' : 'text-rose-400'}">
+                        <span>Ⅱ. 第2階層完全収集？ (自動DPS 1800倍)</span>
+                        <span class="font-bold">${state.checkedF2 ? '✨ 解放' : '❌ 呪い'}</span>
+                    </div>
+                    <div class="flex justify-between items-center ${state.checkedF3 ? 'text-yellow-400' : 'text-rose-400'}">
+                        <span>Ⅲ. 第3階層完全収集？ (制限時間 30s ➜ 60s)</span>
+                        <span class="font-bold">${state.checkedF3 ? '✨ 解放' : '❌ 呪い'}</span>
+                    </div>
+                    <div class="flex justify-between items-center ${state.checkedF4 ? 'text-yellow-400' : 'text-rose-400'}">
+                        <span>Ⅳ. 第4階層完全収集？ (Bossの隠密回復を阻止)</span>
+                        <span class="font-bold">${state.checkedF4 ? '✨ 解放' : '❌ 呪い'}</span>
+                    </div>
+                    <div class="flex justify-between items-center ${state.checkedF5 ? 'text-yellow-400' : 'text-rose-400'}">
+                        <span>Ⅴ. 第5階層完全収集？ (能力値半減を無効化)</span>
+                        <span class="font-bold">${state.checkedF5 ? '✨ 解放' : '❌ 呪い'}</span>
+                    </div>
+                `;
+            }
         }
 
-        // Start Battle Lucia
         function startLuciaBattle() {
             document.getElementById('screen-pentagram').classList.add('hidden');
             document.getElementById('screen-lucia').classList.remove('hidden');
             
-            // Set stats inside battle Lucia HUD
+            AudioEngine.playBossBGM(); // 進入隱藏Boss戰，開始播放Boss音樂
+            
             document.getElementById('lucia-hud-player-dmg').innerText = state.finalPlayerDmg.toLocaleString();
             document.getElementById('lucia-hud-partner-dps').innerText = state.finalPartnerDPS.toLocaleString() + "/s";
             
-            // Reset Lucia Boss state
-            state.luciaHP = 200000000;
-            state.luciaMaxHP = 200000000;
+            state.luciaHP = 1000000000;
+            state.luciaMaxHP = 1000000000;
             state.luciaInvisible = false;
             state.luciaShields = [];
             state.shield1Triggered = false;
@@ -1801,21 +2330,22 @@
             document.getElementById('lucia-shields-block').classList.add('hidden');
             updateLuciaHPBar();
             
-            // Run final combat loops
             clearInterval(state.luciaTimerId);
             state.luciaTimerId = setInterval(luciaBattleTick, 100);
         }
 
         function updateLuciaHPBar() {
-            const pct = (state.luciaHP / state.luciaMaxHP) * 100;
-            document.getElementById('lucia-hp-fill').style.width = `${pct}%`;
-            document.getElementById('lucia-hp-text').innerText = `${Math.floor(state.luciaHP).toLocaleString()} / ${state.luciaMaxHP.toLocaleString()}`;
+            const fill = document.getElementById('lucia-hp-fill');
+            const text = document.getElementById('lucia-hp-text');
+            if (fill && text) {
+                const pct = (state.luciaHP / state.luciaMaxHP) * 100;
+                fill.style.width = `${pct}%`;
+                text.innerText = `${Math.floor(state.luciaHP).toLocaleString()} / ${state.luciaMaxHP.toLocaleString()}`;
+            }
         }
 
-        // Lucia Game loop (runs every 100ms)
         let dpsAccumulator = 0;
         function luciaBattleTick() {
-            // Check countdown limits
             state.luciaTimer -= 0.1;
             if (state.luciaTimer <= 0) {
                 state.luciaTimer = 0;
@@ -1826,29 +2356,24 @@
             
             document.getElementById('lucia-timer').innerText = state.luciaTimer.toFixed(1) + "s";
             
-            // 1. Process automated Partner DPS (applied per second)
             dpsAccumulator += 0.1;
             if (dpsAccumulator >= 1.0) {
                 dpsAccumulator = 0;
                 applyDPSToLucia(state.finalPartnerDPS, true);
             }
 
-            // 2. Process Lucia Shield regeneration loop if F4 is not complete and shields are active
             if (state.luciaInvisible && !state.checkedF4) {
-                // Heals 2% of Max HP per second = 4,000,000 HP (heals 400k every 100ms)
-                const healAmt = 400000;
+                const healAmt = 4000000;
                 state.luciaHP = Math.min(state.luciaHP + healAmt, state.luciaMaxHP);
                 updateLuciaHPBar();
-                document.getElementById('lucia-status-desc').innerText = "⚠️ ルシアは身を隠し、HPを回復中 (+4M/s)！";
+                document.getElementById('lucia-status-desc').innerText = "⚠️ ルシアは身を隠し、HPを回復中 (+4,000,0000/s)！";
             }
         }
 
-        // Apply partner or manual DPS onto Boss or Shields
         function applyDPSToLucia(dmg, isPartner = false) {
             if (state.luciaHP <= 0) return;
 
             if (state.luciaInvisible) {
-                // Damage goes directly into active shields instead!
                 let activeShield = state.luciaShields.find(s => s.hp > 0);
                 if (activeShield) {
                     activeShield.hp -= dmg;
@@ -1860,10 +2385,8 @@
                     
                     updateLuciaShieldsUI();
                     
-                    // Check if all shields are destroyed
                     const anyShieldAlive = state.luciaShields.some(s => s.hp > 0);
                     if (!anyShieldAlive) {
-                        // Return to normal visible state
                         state.luciaInvisible = false;
                         document.getElementById('lucia-shields-block').classList.add('hidden');
                         document.getElementById('lucia-avatar-wrapper').classList.remove('opacity-30');
@@ -1872,7 +2395,6 @@
                     }
                 }
             } else {
-                // Damage goes directly to Lucia
                 state.luciaHP -= dmg;
                 if (state.luciaHP < 0) state.luciaHP = 0;
                 
@@ -1882,14 +2404,11 @@
                 
                 updateLuciaHPBar();
                 
-                // Check health bracket triggers for shields
-                // Bracket 1: HP < 70% (140,000,000)
-                if (state.luciaHP <= 140000000 && !state.shield1Triggered) {
+                if (state.luciaHP <= 700000000 && !state.shield1Triggered) {
                     state.shield1Triggered = true;
                     triggerLuciaShields();
                 }
-                // Bracket 2: HP < 40% (80,000,000)
-                else if (state.luciaHP <= 80000000 && !state.shield2Triggered) {
+                else if (state.luciaHP <= 400000000 && !state.shield2Triggered) {
                     state.shield2Triggered = true;
                     triggerLuciaShields();
                 }
@@ -1900,7 +2419,6 @@
             }
         }
 
-        // Spawn shields
         function triggerLuciaShields() {
             state.luciaInvisible = true;
             AudioEngine.playBossShield();
@@ -1908,11 +2426,10 @@
             showNotification("🛡️ ルシアがシールドを召喚して姿を消した！すべてのシールドを破壊して本体にダメージを与えよ！", "dreamy");
             document.getElementById('lucia-status-desc').innerText = "シールド展開！ルシアは不可視の庇護に入った";
             
-            // Spawn 3 protective shields with 1,000,000 HP each
             state.luciaShields = [
-                { id: 1, hp: 1000000, maxHp: 1000000 },
-                { id: 2, hp: 1000000, maxHp: 1000000 },
-                { id: 3, hp: 1000000, maxHp: 1000000 }
+                { id: 1, hp: 20000000, maxHp: 20000000 },
+                { id: 2, hp: 20000000, maxHp: 20000000 },
+                { id: 3, hp: 20000000, maxHp: 20000000 }
             ];
 
             document.getElementById('lucia-avatar-wrapper').classList.add('opacity-30');
@@ -1922,6 +2439,7 @@
 
         function updateLuciaShieldsUI() {
             const container = document.getElementById('lucia-shields-block');
+            if (!container) return;
             container.innerHTML = "";
             
             state.luciaShields.forEach(s => {
@@ -1940,9 +2458,8 @@
             });
         }
 
-        // Handle direct tap on shield nodes
         function handleTapShield(e, shieldId) {
-            e.stopPropagation(); // prevent triggering parent tap Lucia
+            e.stopPropagation(); 
             AudioEngine.playTap();
             
             let s = state.luciaShields.find(item => item.id === shieldId);
@@ -1953,7 +2470,6 @@
                 createDamagePopLuciaArena(state.finalPlayerDmg, false, e.clientX, e.clientY);
                 updateLuciaShieldsUI();
                 
-                // Check if all shields are destroyed
                 const anyShieldAlive = state.luciaShields.some(item => item.hp > 0);
                 if (!anyShieldAlive) {
                     state.luciaInvisible = false;
@@ -1965,17 +2481,16 @@
             }
         }
 
-        // Tap Lucia main arena
         function handleTapLucia(e) {
             AudioEngine.playTap();
             
-            // Screen shake
             const avatar = document.getElementById('lucia-avatar-wrapper');
-            avatar.style.transform = "scale(0.92) rotate(-2deg)";
-            setTimeout(() => { avatar.style.transform = "scale(1) rotate(0deg)"; }, 75);
+            if (avatar) {
+                avatar.style.transform = "scale(0.92) rotate(-2deg)";
+                setTimeout(() => { avatar.style.transform = "scale(1) rotate(0deg)"; }, 75);
+            }
 
             if (state.luciaInvisible) {
-                // Direct hits to boss while shielded get distributed to first active shield
                 let activeShield = state.luciaShields.find(s => s.hp > 0);
                 if (activeShield) {
                     activeShield.hp -= state.finalPlayerDmg;
@@ -1984,7 +2499,6 @@
                     createDamagePopLuciaArena(state.finalPlayerDmg, false, e.clientX, e.clientY);
                     updateLuciaShieldsUI();
                     
-                    // Check if all shields are destroyed
                     const anyShieldAlive = state.luciaShields.some(s => s.hp > 0);
                     if (!anyShieldAlive) {
                         state.luciaInvisible = false;
@@ -2001,18 +2515,19 @@
         }
 
         function createDamagePopLuciaArena(amount, isPartner = false, customX = null, customY = null) {
+            const screen = document.getElementById('screen-lucia');
+            if (!screen) return;
             const pop = document.createElement('div');
             pop.className = "damage-pop " + (isPartner ? "text-rose-400 text-xs" : "text-white text-base text-shadow-md");
             pop.innerText = "-" + amount.toLocaleString();
             
-            const bounds = document.getElementById('screen-lucia').getBoundingClientRect();
+            const bounds = screen.getBoundingClientRect();
             
             let posX, posY;
             if (customX && customY) {
                 posX = customX - bounds.left;
                 posY = customY - bounds.top;
             } else {
-                // Randomly spawn around center of screen
                 posX = bounds.width / 2 + (Math.random() * 120 - 60);
                 posY = bounds.height / 2 + (Math.random() * 120 - 60);
             }
@@ -2020,13 +2535,13 @@
             pop.style.left = `${posX}px`;
             pop.style.top = `${posY}px`;
             
-            document.getElementById('screen-lucia').appendChild(pop);
+            screen.appendChild(pop);
             setTimeout(() => pop.remove(), 800);
         }
 
-        // Final battle gameover router
         function handleLuciaBattleGameOver(success) {
             clearInterval(state.luciaTimerId);
+            AudioEngine.playMainBGM(); // 隱藏Boss戰結束後，切回遊戲主BGM
             
             document.getElementById('screen-lucia').classList.add('hidden');
             document.getElementById('screen-game-over-ending').classList.remove('hidden');
@@ -2036,35 +2551,155 @@
             const iconEl = document.getElementById('ending-icon');
             
             if (success) {
-                // True Ending
+                state.luciaDefeated = true; 
                 AudioEngine.playDreamyChord();
                 iconEl.innerText = "🌟";
                 titleEl.className = "text-2xl font-black cinzel text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-emerald-400 tracking-wider";
                 titleEl.innerText = "真エンド ——〈明晰夢〉";
-                descEl.innerText = `「あなたは自分自身の心と和解しました。たとえそれが完璧でなくとも……\n\nおめでとうございます。己の限界を突破し、朝の最初の光を迎えました。\n\nプレイしていただきありがとうございました —— 明晰夢」`;
+                descEl.innerText = `「あなたは自分自身の心魔（しんま）と完全なる和解を果たしました。たとえ不完全な自分であっても、それを受け入れる強さを得たのです。
+
+おめでとうございます。自覚を極め、永劫の眠りから覚め、本物の新しい朝を迎える準備ができました。
+
+プレイしていただき本当にありがとうございました —— 明晰夢」`;
             } else {
-                // Bad Ending
                 AudioEngine.playBossShield();
                 iconEl.innerText = "💀";
                 titleEl.className = "text-2xl font-black cinzel text-rose-500 tracking-wider";
                 titleEl.innerText = "バッドエンド ——〈悪夢……〉";
-                descEl.innerText = `「あなたは結局、自分自身の心魔に打ち勝つことはできませんでした……\n\nあなたは、次の意識の呼び声があるまで、深い夢の中に永遠に眠り続けることでしょう……」`;
+                descEl.innerText = `「あなたは結局、自分自身の奥深くに棲む心魔に抗うことはできませんでした……
+
+あなたの意識は、再び目覚めの呼び声が響き渡るその日まで、昏く冷たい深層夢の底へと永遠に沈み続けます……」`;
             }
+
+            openAchievementsModal(); 
         }
 
-        // Developer quick cheats
+        // --- 9. ACHIEVEMENT SYSTEM (JAPANESE) ---
+        function getAchievements() {
+            let partnersCount = 0;
+            PARTNERS_CONFIG.forEach(p => { if (state.partnersOwned[p.id]) partnersCount++; });
+            
+            let lordsCount = 0;
+            let lordsMaxCount = 0;
+            ['purple', 'green', 'yellow'].forEach(k => {
+                if (state.lordLevels[k] > 0) lordsCount++;
+                if (state.lordLevels[k] >= 6) lordsMaxCount++;
+            });
+
+            let artifactsCount = 0;
+            Object.keys(state.artifactsOwned).forEach(k => {
+                if (state.artifactsOwned[k]) artifactsCount++;
+            });
+
+            const achs = [
+                { id: 'p1', name: 'ここに立ち寄る', type: 'bronze', req: 'プレイヤーレベル5到達', unlocked: state.playerLevel >= 5, hidden: false },
+                { id: 'p2', name: '軌道に乗る', type: 'silver', req: 'プレイヤーレベル15到達', unlocked: state.playerLevel >= 15, hidden: false },
+                { id: 'p3', name: '夢を破る者', type: 'gold', req: 'プレイヤーレベルMAX (25) 到達', unlocked: state.playerLevel >= 25, hidden: false },
+                
+                { id: 'a1', name: 'もう孤独ではない', type: 'bronze', req: 'パートナーを1人以上解放', unlocked: partnersCount >= 1, hidden: false },
+                { id: 'a2', name: '君と共に', type: 'silver', req: 'パートナーを10人以上収集', unlocked: partnersCount >= 10, hidden: false },
+                { id: 'a3', name: '夢を遊ぶ者', type: 'gold', req: 'パートナー全収集 (20人)', unlocked: partnersCount >= 20, hidden: false },
+                
+                { id: 'l1', name: '恍惚なる夢', type: 'bronze', req: '夢の主を1人以上解放', unlocked: lordsCount >= 1, hidden: false },
+                { id: 'l2', name: '浮生は夢の如し', type: 'silver', req: '夢の主を全員解放', unlocked: lordsCount >= 3, hidden: false },
+                { id: 'l3', name: '夢に舞う者', type: 'gold', req: '夢の主を全員MAX (6等) まで覚醒', unlocked: lordsMaxCount >= 3, hidden: false },
+                
+                { id: 'w1', name: '神器錬成', type: 'bronze', req: '神器を1つ以上解放', unlocked: artifactsCount >= 1, hidden: false },
+                { id: 'w2', name: '鍛造の奇才', type: 'silver', req: '神器を3つ以上解放', unlocked: artifactsCount >= 3, hidden: false },
+                { id: 'w3', name: '夢を織る者', type: 'gold', req: '神器をすべて解放', unlocked: artifactsCount >= 6, hidden: false },
+                
+                { id: 'h1', name: '夢の主', type: 'rainbow', req: '夢の主全員MAX / キャラMAX / ペット全収集 / 神器全収集', unlocked: (lordsMaxCount >= 3 && state.playerLevel >= 25 && partnersCount >= 20 && artifactsCount >= 6), hidden: true },
+                { id: 'h2', name: '経済的自由', type: 'rainbow', req: '累計10万ゴールド収集（やはり夢なのか...?）', unlocked: state.cumulativeGold >= 100000, hidden: true },
+                { id: 'h3', name: '無限スロット', type: 'rainbow', req: '累計1万夢の欠片収集（6+5!! 6+5!!）', unlocked: state.cumulativeShards >= 10000, hidden: true },
+                { id: 'h4', name: '選ばれし者', type: 'rainbow', req: '累計100夢の神髄収集（現実の運もこれくらい良ければいいのにQQ）', unlocked: state.cumulativeEssence >= 100, hidden: true },
+                { id: 'h5', name: '明晰夢', type: 'rainbow', req: '隠しBossを撃破（本当の自分...）', unlocked: state.luciaDefeated === true, hidden: true }
+            ];
+
+            const allPrevUnlocked = achs.every(a => a.unlocked);
+            achs.push({ id: 'h6', name: '嘘でしょ?!!', type: 'rainbow', req: '1周目で全実績達成（チートかどうかは分からないけど…プレイしてくれて本当にありがとう!!(土下座)）', unlocked: allPrevUnlocked, hidden: true });
+
+            return achs;
+        }
+
+        function openAchievementsModal() {
+            renderAchievements();
+            document.getElementById('modal-achievements').classList.remove('hidden');
+            AudioEngine.playDreamyChord();
+        }
+
+        function closeAchievementsModal() {
+            document.getElementById('modal-achievements').classList.add('hidden');
+        }
+
+        function renderAchievements() {
+            const list = document.getElementById('achievements-list');
+            list.innerHTML = "";
+            const achs = getAchievements();
+
+            achs.forEach(ach => {
+                let borderCol = "";
+                let textCol = "";
+                let icon = "";
+                let bgStyle = ach.unlocked ? "bg-slate-900/80" : "bg-slate-950/60 opacity-60";
+
+                if (ach.type === 'bronze') {
+                    borderCol = ach.unlocked ? "border-amber-700" : "border-slate-800";
+                    textCol = ach.unlocked ? "text-amber-500" : "text-slate-500";
+                    icon = "🥉";
+                } else if (ach.type === 'silver') {
+                    borderCol = ach.unlocked ? "border-slate-300" : "border-slate-800";
+                    textCol = ach.unlocked ? "text-slate-200" : "text-slate-500";
+                    icon = "🥈";
+                } else if (ach.type === 'gold') {
+                    borderCol = ach.unlocked ? "border-yellow-400" : "border-slate-800";
+                    textCol = ach.unlocked ? "text-yellow-400" : "text-slate-500";
+                    icon = "🥇";
+                } else if (ach.type === 'rainbow') {
+                    borderCol = ach.unlocked ? "border-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.5)] animate-pulse" : "border-slate-800";
+                    textCol = ach.unlocked ? "text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 font-black" : "text-slate-500";
+                    icon = "🌈";
+                }
+
+                let displayReq = ach.req;
+                let displayName = ach.name;
+
+                if (ach.hidden && !ach.unlocked) {
+                    displayName = "??? (隠し実績)";
+                    displayReq = "解放条件は達成後に明らかになります...";
+                    icon = "🔒";
+                }
+
+                list.innerHTML += `
+                    <div class="border ${borderCol} ${bgStyle} rounded-xl p-3 flex gap-3 items-center transition-all duration-300 relative overflow-hidden">
+                        <div class="text-2xl w-10 text-center">${icon}</div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-sm ${textCol}">${displayName}</span>
+                                <span class="text-[9px] font-bold px-2 py-0.5 rounded ${ach.unlocked ? 'bg-emerald-900/50 text-emerald-400 border border-emerald-500/30' : 'bg-slate-900 text-slate-500 border border-slate-700'}">${ach.unlocked ? '達成済' : '未達成'}</span>
+                            </div>
+                            <p class="text-[10px] ${ach.unlocked ? 'text-slate-300' : 'text-slate-600'} leading-relaxed">${displayReq}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         function toggleDebugPanel() {
             const drawer = document.getElementById('debug-drawer');
-            drawer.classList.toggle('hidden');
+            if (drawer) drawer.classList.toggle('hidden');
         }
 
-        function giveCheatAssets(gold, shards, shopShards) {
+        function giveCheatAssets(gold, shards, shopShards, essence) {
             state.gold += gold;
+            state.cumulativeGold += gold; 
             state.dreamShards += shards;
+            state.cumulativeShards += shards; 
             state.shopShards += shopShards;
+            state.dreamEssence += essence;
+            state.cumulativeEssence += essence; 
             AudioEngine.playCoin();
             updateHUD();
-            showNotification(`⚙️ デバッグ注入：ゴールド+${gold} | 夢の欠片+${shards} | ショップの欠片+${shopShards}`, "success");
+            showNotification(`⚙️ 特権注入：ゴールド+${gold} | 欠片+${shards} | 鑑定物+${shopShards} | 神髄+${essence}`, "success");
         }
 
         function unlockAllPartnersCheat() {
@@ -2073,25 +2708,34 @@
             });
             AudioEngine.playDreamyChord();
             updateHUD();
-            showNotification("⚙️ パートナー図鑑がコンプリートされました！隠しボスに挑戦可能です！", "success");
+            showNotification("⚙️ パートナー図鑑が全解放されました！隠しボスに挑戦可能です！", "success");
             if (!document.getElementById('tab-partners').classList.contains('hidden')) {
                 renderPartnersGrid();
             }
         }
 
-        // Reset game to default Welcome Screen
         function resetGame() {
-            // Re-initialize state values
+            AudioEngine.stopAllBGM(); // 回到開始畫面時停止所有音樂
             state.gold = 0;
             state.dreamShards = 0;
             state.shopShards = 0;
+            state.dreamEssence = 0;
             state.playerLevel = 1;
             state.maxFloorReached = 1;
             state.activeFloor = 1;
             state.monstersDefeated = 0;
             state.isBossActive = false;
-            state.ending = null;
+            state.showcaseLordIndex = 0;
             
+            state.cumulativeGold = 0;
+            state.cumulativeShards = 0;
+            state.cumulativeEssence = 0;
+            state.luciaDefeated = false;
+            
+            state.lordLevels.purple = 0;
+            state.lordLevels.green = 0;
+            state.lordLevels.yellow = 0;
+
             PARTNERS_CONFIG.forEach(p => {
                 state.partnersOwned[p.id] = false;
                 state.fragments[p.id] = 0;
@@ -2101,12 +2745,13 @@
                 state.artifactsOwned[id] = false;
             });
 
-            // Reset UI screens visible states
             document.getElementById('screen-normal-ending').classList.add('hidden');
             document.getElementById('screen-glitch-portal').classList.add('hidden');
             document.getElementById('screen-pentagram').classList.add('hidden');
             document.getElementById('screen-lucia').classList.add('hidden');
             document.getElementById('screen-game-over-ending').classList.add('hidden');
+            document.getElementById('modal-status').classList.add('hidden');
+            document.getElementById('modal-achievements').classList.add('hidden');
             
             document.getElementById('screen-game').classList.add('hidden');
             document.getElementById('screen-welcome').classList.remove('hidden');
